@@ -7,10 +7,11 @@ def txt2csv(txt_file):
     :return: 返回转化后的csv文件
     """
     with open(txt_file,"r") as file_r:
+        # 读取文件中所有行内容
         lines = file_r.readlines()
-
+    # 将txt文件转化为csv文件格式名
     csv_name = txt_file.replace("txt","csv")
-
+    # 新建csv文件
     with open(csv_name,"w+") as file_w:
         for line in lines:
             if("#" in line):
@@ -23,6 +24,8 @@ def txt2csv(txt_file):
             file_w.write(line)
 
     return csv_name
+
+
 
 
 #txt2csv("../data/BSC_acc_1_1.txt")
