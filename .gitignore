@@ -18,3 +18,4 @@ data
 *.txt
 *.xml
 .idea
+*.pyc
