@@ -10,9 +10,17 @@ def txt2csv(txt_file):
     :param txt_file: txt格式文件
     :return: 返回转化后的csv文件
     """
-    with open(txt_file,"r") as file_r:
+    try:
+        file = open(txt_file,"r")
+        file.close()
+    except IOError:
+        print(txt_file,"文件不存在或无法读取！")
+        return txt_file
+
+    with open(txt_file,"r") as f:
         # 读取文件中所有行内容
-        lines = file_r.readlines()
+        lines = f.readlines()
+
     # 将txt文件转化为csv文件格式名
     csv_name = txt_file.replace("txt","csv")
     # 新建csv文件
@@ -34,7 +42,7 @@ def txt2csv(txt_file):
             if(line.isspace()):
                 continue
             file_w.write(line)
-
+    print("将",txt_file,"转化成",csv_name)
     return csv_name
 
 def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FILE):
@@ -54,7 +62,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
         print(acc_csv_file,"文件无法打开或不存在！")
         return acc_csv_file
     else:
-        print(acc_csv_file,"成功读取文件")
+        print(acc_csv_file,"成功读取")
 
     if("acc" in acc_csv_file):
         gyro_csv_file = acc_csv_file.replace("acc","gyro")
@@ -68,7 +76,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
         print(gyro_csv_file,"文件无法打开或不存在！")
         return gyro_csv_file
     else:
-        print(gyro_csv_file, "成功读取文件")
+        print(gyro_csv_file, "成功读取")
 
     acc_extract_data = acc_data.iloc[begin:end, 1:4].values
     gyro_extract_data = gyro_data.iloc[begin:end, 1:4].values
@@ -99,10 +107,13 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
           "份数据。并保存至",save_data_file)
     return save_data_file
 
-extract_data("../data/BSC_acc_1_1.csv",200,300)
+# 测试代码
+txt2csv("../data/BSC_acc_1_1.txt")
+#extract_data("../data/BSC_acc_1_1.csv",200,300)
 
-file = pd.read_csv(FALL_DATA_SAVE_FILE)
-print(file.shape)
 
-print(file.tail())
+# file = pd.read_csv(FALL_DATA_SAVE_FILE)
+# print(file.shape)
+#
+# print(file.tail())
 
