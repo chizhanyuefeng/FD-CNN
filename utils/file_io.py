@@ -1,6 +1,8 @@
 # -*- coding:UTF-8 -*-
 import pandas as pd
-import numpy as np
+import os
+
+FALL_DATA_SAVE_FILE = "/home/tony/fall_data/fall_data.csv"
 
 def txt2csv(txt_file):
     """
@@ -35,32 +37,72 @@ def txt2csv(txt_file):
 
     return csv_name
 
-def extract_data(file,begin,end,sensor=0,label=0,new_data_file="/home/tony/fall_data/fall_data.txt"):
+def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FILE):
     """
     提取数据，根据参数，截取定长数据来存储到new_data_file中.
     截取的数据长度=end+1-begin
-    :param file: 需要提取的数据文件
+    :param acc_csv_file: 需要提取的csv数据文件
     :param begin: 数据的起始段
     :param end: 数据的终止段
-    :param sensor: 传感器标识符，0代表加速度传感器，1代表陀螺仪传感器
     :param label: 数据分类类型
-    :param new_data_file: 攫取的数据存储文件
+    :param save_data_file: 攫取的数据存储文件
     :return: 返回存储好的文件
     """
-    data_file = pd.read_csv(file)
-    extract_data = data_file.iloc[begin:end+1,1:4].values
+    try:
+        acc_data = pd.read_csv(acc_csv_file)
+    except IOError:
+        print(acc_csv_file,"文件无法打开或不存在！")
+        return acc_csv_file
+    else:
+        print(acc_csv_file,"成功读取文件")
 
-    with open(new_data_file,"a+") as data_file:
-        if sensor == 0:
-            #在数据每一行中，第一位代表数据标签。0代表跌倒数据,非0代表日常活动数据
-            data_file.write(str(label)+",")
-        for data in extract_data:
-            line_data = str(data[0])+","+str(data[1])+","+str(data[2])+","
-            data_file.write(line_data)
-        if sensor !=0:
-            #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
+    if("acc" in acc_csv_file):
+        gyro_csv_file = acc_csv_file.replace("acc","gyro")
+    else:
+        print(acc_csv_file,"此文件不是加速度传感器csv文件,无法提取数据！")
+        return acc_csv_file
+
+    try:
+        gyro_data = pd.read_csv(gyro_csv_file)
+    except IOError:
+        print(gyro_csv_file,"文件无法打开或不存在！")
+        return gyro_csv_file
+    else:
+        print(gyro_csv_file, "成功读取文件")
+
+    acc_extract_data = acc_data.iloc[begin:end, 1:4].values
+    gyro_extract_data = gyro_data.iloc[begin:end, 1:4].values
+
+    with open(save_data_file,"a+") as data_file:
+        data_file.seek(0,os.SEEK_SET)
+        if(data_file.read()==""):
+            data_file.write("label")
+            for i in range(600):
+                data_file.write(","+str(i+1))
             data_file.write("\n")
 
-    return new_data_file
+        data_file.seek(0, os.SEEK_END)
+        #在数据每一行中，第一位代表数据标签。0代表跌倒数据,非0代表日常活动数据
+        data_file.write(str(label))
+
+        for data in acc_extract_data:
+            line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
+            data_file.write(line_data)
+
+        for data in gyro_extract_data:
+            line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
+            data_file.write(line_data)
+
+        #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
+        data_file.write("\n")
+    print("从",acc_csv_file,"和",gyro_csv_file,"中各提取",str(end-begin),
+          "份数据。并保存至",save_data_file)
+    return save_data_file
 
 extract_data("../data/BSC_acc_1_1.csv",200,300)
+
+file = pd.read_csv(FALL_DATA_SAVE_FILE)
+print(file.shape)
+
+print(file.tail())
+
