@@ -3,11 +3,12 @@ import pandas as pd
 import os
 
 FALL_DATA_SAVE_FILE = "/home/tony/fall_data/fall_data.csv"
+file_num=0
 
 def txt2csv(txt_file):
     """
     将txt文件复制并转化成csv文件
-    :param txt_file: txt格式文件
+    :param txt_file: txt格式文件路径
     :return: 返回转化后的csv文件
     """
     try:
@@ -107,13 +108,32 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
           "份数据。并保存至",save_data_file)
     return save_data_file
 
-# 测试代码
-txt2csv("../data/BSC_acc_1_1.txt")
-#extract_data("../data/BSC_acc_1_1.csv",200,300)
+def find_txt_data_file(path):
+    """
+    查找所有txt数据文件，并转化成csv文件
+    :param path: 绝对路径
+    :return: 无
+    """
+    for i in os.listdir(path):
+        if(os.path.isfile(path+"/"+i)):
+            if ("txt" in i) and (("acc" in i) or ("gyro" in i)):
+                txt2csv(path+"/"+i)
+        else:
+            find_txt_data_file(path+"/"+i)
 
 
-# file = pd.read_csv(FALL_DATA_SAVE_FILE)
-# print(file.shape)
-#
-# print(file.tail())
+def test():
+    # 测试代码
+    #txt2csv("../data/BSC_acc_1_1.txt")
+    #extract_data("../data/BSC_acc_1_1.csv",200,300)
 
+    # file = pd.read_csv(FALL_DATA_SAVE_FILE)
+    # print(file.shape)
+    #
+    # print(file.tail())
+
+    #find_txt_data_file("/home/tony/fall_data/MobiFall_Dataset_v2.0")
+    print(file_num)
+
+#if __name__=="__main__":
+test()
