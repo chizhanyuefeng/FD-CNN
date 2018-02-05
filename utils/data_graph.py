@@ -19,12 +19,19 @@ def line_chart(csv_file):
     plt.show()
     #data.plot()
 
+def main():
+    """
+    测试代码
+    :return:
+    """
+    csv_name = fio.txt2csv("../data/BSC_acc_1_1.txt")
+    csv_name2 = fio.txt2csv("../data/BSC_acc_1_2.txt")
+    csv_name3 = fio.txt2csv("../data/BSC_acc_1_3.txt")
+
+    line_chart(csv_name)
+    line_chart(csv_name2)
+    line_chart(csv_name3)
 
 
-csv_name = fio.txt2csv("../data/BSC_acc_1_1.txt")
-csv_name2 = fio.txt2csv("../data/BSC_acc_1_2.txt")
-csv_name3 = fio.txt2csv("../data/BSC_acc_1_3.txt")
-
-line_chart(csv_name)
-line_chart(csv_name2)
-line_chart(csv_name3)
+if __name__ == '__main__':
+    main()

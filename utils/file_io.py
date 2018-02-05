@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
-import pandas as pd
+
 import os
+import pandas as pd
 
 FALL_DATA_SAVE_FILE = "/home/tony/fall_data/fall_data.csv"
 
@@ -121,7 +122,7 @@ def find_txt_data_file(path):
             find_txt_data_file(path+"/"+i)
 
 
-def test():
+def main():
     print("test")
     # 测试代码
     #txt2csv("../data/BSC_acc_1_1.txt")
@@ -135,5 +136,5 @@ def test():
     #find_txt_data_file("/home/tony/fall_data/MobiFall_Dataset_v2.0")
 
 
-#if __name__=="__main__":
-test()
+if __name__=="__main__":
+    main()
