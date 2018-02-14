@@ -2,6 +2,7 @@
 
 import os
 import pandas as pd
+import data_graph as dp
 
 FALL_DATA_SAVE_FILE = "/home/tony/fall_data/fall_data.csv"
 
@@ -57,6 +58,11 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
     :param save_data_file: 攫取的数据存储文件
     :return: 返回存储好的文件
     """
+    
+    if (end-begin)!=200:
+        print('数据截取长度不为200份')
+        return 'error'
+
     try:
         acc_data = pd.read_csv(acc_csv_file)
     except IOError:
@@ -78,6 +84,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
         return gyro_csv_file
     else:
         print(gyro_csv_file, "成功读取")
+
 
     acc_extract_data = acc_data.iloc[begin:end, 1:4].values
     gyro_extract_data = gyro_data.iloc[begin:end, 1:4].values
@@ -111,7 +118,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
 def find_txt_data_file(path):
     """
     查找所有txt数据文件，并转化成csv文件
-    :param path: 绝对路径
+    :param path: 文件绝对路径
     :return: 无
     """
     for i in os.listdir(path):
@@ -123,7 +130,11 @@ def find_txt_data_file(path):
 
 
 def main():
-    print("test")
+    file = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub1/FALLS/BSC/BSC_acc_1_1.csv'
+    dp.line_chart(file)
+
+    extract_data(file,100,200)
+    #print("test")
     # 测试代码
     #txt2csv("../data/BSC_acc_1_1.txt")
     #extract_data("../data/BSC_acc_1_1.csv",200,300)
