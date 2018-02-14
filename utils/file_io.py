@@ -58,7 +58,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
     :param save_data_file: 攫取的数据存储文件
     :return: 返回存储好的文件
     """
-    
+
     if (end-begin)!=200:
         print('数据截取长度不为200份')
         return 'error'
@@ -130,10 +130,12 @@ def find_txt_data_file(path):
 
 
 def main():
-    file = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub1/FALLS/BSC/BSC_acc_1_1.csv'
+    file = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub1/FALLS/BSC/BSC_acc_1_2.csv'
     dp.line_chart(file)
 
-    extract_data(file,100,200)
+    begin = input('起始：')
+    end = input('终止：')
+    extract_data(file,int(begin),int(end))
     #print("test")
     # 测试代码
     #txt2csv("../data/BSC_acc_1_1.txt")
