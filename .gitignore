@@ -14,7 +14,7 @@ _book
 *.epub
 *.mobi
 *.pdf
-data
+#data
 *.txt
 *.xml
 .idea

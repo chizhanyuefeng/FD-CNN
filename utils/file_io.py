@@ -93,7 +93,7 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
         data_file.seek(0,os.SEEK_SET)
         if data_file.read()=="":
             data_file.write("label")
-            for i in range(600):
+            for i in range(1200):
                 data_file.write(","+str(i+1))
             data_file.write("\n")
 
@@ -139,7 +139,7 @@ def main():
                 print('开始截取',i,'文件')
                 dp.line_chart(file)
                 begin = input('起始：')
-                end = input('终止：')
+                #end = input('终止：')
                 extract_data(file, int(begin), int(begin) + 200)
 
     print("截取完成")
