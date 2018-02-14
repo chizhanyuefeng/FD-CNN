@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import data_graph as dp
 
-FALL_DATA_SAVE_FILE = "/home/tony/fall_data/fall_data.csv"
+FALL_DATA_SAVE_FILE = "/home/tony/git_project/fall_down_detection/data/fall_data.csv"
 
 def txt2csv(txt_file):
     """
@@ -130,7 +130,7 @@ def find_txt_data_file(path):
 
 
 def main():
-    path = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub1/FALLS/BSC/'
+    path = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub1/FALLS/FKL/'
 
     for i in os.listdir(path):
         file = path + '/' + i
@@ -143,6 +143,10 @@ def main():
                 extract_data(file, int(begin), int(begin) + 200)
 
     print("截取完成")
+
+    # f = pd.read_csv(FALL_DATA_SAVE_FILE)
+    # print(f.head())
+    # print(f.shape)
     # 测试代码
     #txt2csv("../data/BSC_acc_1_1.txt")
     #extract_data("../data/BSC_acc_1_1.csv",200,300)
