@@ -130,14 +130,14 @@ def find_txt_data_file(path):
 
 
 def main():
-    path = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub15/FALLS/SDL/'
+    path = '/home/tony/fall_data/MobiFall_Dataset_v2.0/sub16/FALLS/SDL/'
 
     for i in os.listdir(path):
         file = path + '/' + i
         if os.path.isfile(file):
             if ('acc' in i) and ('csv' in i):
                 print('开始截取',i,'文件')
-                dp.line_chart(file)
+                dp.fall_line_chart(file)
                 begin = input('起始：')
                 #end = input('终止：')
                 extract_data(file, int(begin), int(begin) + 200)
