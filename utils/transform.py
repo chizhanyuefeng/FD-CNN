@@ -3,7 +3,7 @@
 import PIL.Image as Image
 import numpy as np
 
-def data2image(data):
+def normalize_sensor_data(data):
     '''
     将跌倒数据转化成图像数据
     :param data: 长度为1200的数组
@@ -20,6 +20,14 @@ def data2image(data):
 
     print(image.shape)
     return image
+
+def data2image(data):
+    '''
+    将规范化后的传感器数据转化为图像数据
+    :param data: 规范后的数据
+    :return: 生成好的图像数据
+    '''
+
 
 
 if __name__ == '__main__':
