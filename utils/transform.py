@@ -2,6 +2,7 @@
 
 import PIL.Image as Image
 import numpy as np
+import matplotlib.pyplot as plt
 
 def normalize_sensor_data(data):
     '''
@@ -27,6 +28,19 @@ def data2image(data):
     :param data: 规范后的数据
     :return: 生成好的图像数据
     '''
+    if data.shape != [3,400]:
+        print('需要转化的数据类型不匹配，错误shape=',data.shape)
+        return None
+
+    r = Image.fromarray(data[0]).convert('L')
+    g = Image.fromarray(data[1]).convert('L')
+    b = Image.fromarray(data[2]).convert('L')
+
+    image = Image.merge('RGB',(r,g,b))
+
+    plt.imshow(image)
+
+    return image
 
 
 
