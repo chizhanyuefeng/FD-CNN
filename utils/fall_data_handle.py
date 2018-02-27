@@ -85,6 +85,9 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
     else:
         print(gyro_csv_file, "成功读取")
 
+    if not os.path.exists(save_data_file):
+        print('文件存储路径有问题:',save_data_file)
+        return None
 
     acc_extract_data = acc_data.iloc[begin:end, 1:4].values
     gyro_extract_data = gyro_data.iloc[begin:end, 1:4].values
@@ -126,6 +129,10 @@ def find_txt_data_file(path):
     :param path: 文件绝对路径
     :return: 无
     """
+    if not os.path.exists(path):
+        print('路径存在问题：',path)
+        return None
+
     for i in os.listdir(path):
         if os.path.isfile(path+"/"+i):
             if ("txt" in i) and (("acc" in i) or ("gyro" in i)):

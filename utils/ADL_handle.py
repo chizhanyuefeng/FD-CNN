@@ -40,7 +40,10 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         return annotated_file
     else:
         print(annotated_file,"成功读取")
-
+    if not os.path.exists(save_data_file):
+        print('文件存储路径有问题:',save_data_file)
+        return None
+    
     acc_extract_data = annotated_data.iloc[begin:end:2, 2:5].values
     gyro_extract_data = annotated_data.iloc[begin:end:2, 5:8].values
 
