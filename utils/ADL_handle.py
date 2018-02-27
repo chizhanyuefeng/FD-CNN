@@ -17,6 +17,7 @@ import data_graph as dp
 # import matplotlib.pyplot as plt
 
 ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\\adl_data.csv"
+INDEX_FILE = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC\indexfile.csv'
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
@@ -40,10 +41,7 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         return annotated_file
     else:
         print(annotated_file,"成功读取")
-    if not os.path.exists(save_data_file):
-        print('文件存储路径有问题:',save_data_file)
-        return None
-    
+
     acc_extract_data = annotated_data.iloc[begin:end:2, 2:5].values
     gyro_extract_data = annotated_data.iloc[begin:end:2, 5:8].values
 
@@ -68,29 +66,47 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         for data in gyro_extract_data:
             line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
             data_file.write(line_data)
-
         #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
         data_file.write("\n")
-
     print("从",annotated_file,"文件中提取",str((end-begin)/2),"份数据。\n已保存至",save_data_file)
+
+    with open(INDEX_FILE, "a+") as index_file:
+        index_file.seek(0,os.SEEK_SET)
+        if index_file.read()=="":
+            index_file.write("Name")
+            index_file.write("\n")
+        index_file.seek(0,os.SEEK_END)
+        index_file.write(annotated_file)
+        index_file.write("\n")
+    print("已将文件处理完成加入索引！")
 
     return save_data_file
 
 def main():
     path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
-
+    count = 0
     for i in os.listdir(path):
         file = path + '\\' + i
-        if os.path.isfile(file):
-            if ('annotated' in i) and ('csv' in i):
-                print('开始截取',i,'文件')
-                dp.adl_line_chart(file)
-                #dp.fall_line_chart(file)
-                begin = input('起始：')
-                pdFile = pd.read_csv(file)
-                begin_num = int(begin)
-                lableName = pdFile.label[begin_num]
-                extract_data(file, int(begin), int(begin) + 400,lableName)
+        flag = 0
+        rownum = 0
+        if os.path.isfile(INDEX_FILE):
+            infile = pd.read_csv(INDEX_FILE)
+            rownum = len(infile.Name)
+            for j in range(1,rownum):
+                if(file == infile.Name[j]):
+                    flag = 1
+        if flag != 1:
+            if os.path.isfile(file):
+                if ('annotated' in i) and ('csv' in i) and (count<5):
+                    print('开始截取',i,'文件')
+                    dp.adl_line_chart(file)
+                    #dp.fall_line_chart(file)
+                    begin = input('起始：')
+                    pdFile = pd.read_csv(file)
+                    begin_num = int(begin)
+                    labelName = pdFile.label[begin_num]
+                    extract_data(file, int(begin), int(begin) + 400,labelName)
+                    count=count+1
 
     print("截取完成！")
 
