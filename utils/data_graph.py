@@ -67,7 +67,8 @@ def adl_line_chart(csv_file):
     acc_y = np.arange(acc_min,acc_max,0.1)
     for key in label_dict:
         value = np.zeros((acc_y.size)) +label_dict[key]
-        plt.plot(value, acc_y, label=key)
+        plt.plot(value, acc_y, color = 'black')
+        plt.annotate(key,xy=(value[0],acc_max))
 
     # 添加解释图标
     plt.legend()
@@ -86,7 +87,8 @@ def adl_line_chart(csv_file):
     gyro_y = np.arange(gyro_min,gyro_max,0.1)
     for key in label_dict:
         value = np.zeros((gyro_y.size)) +label_dict[key]
-        plt.plot(value, gyro_y, label=key)
+        plt.plot(value, gyro_y, color = 'black')
+        plt.annotate(key, xy=(value[0], gyro_max))
     # 添加解释图标
     plt.legend()
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
