@@ -43,36 +43,34 @@ def transform_sensor_data(sensor_data):
 def data2image(transform_data,num):
     '''
     将规范化后的传感器数据转化为图像数据
-    :param data: 规范后的数据
+    :param transform_data: 规范后的数据
     :param num: 图像编号
     :return: 生成好的图像数据
     '''
     if transform_data.shape != (3,20,20):
         print('需要转化的数据类型不匹配，错误shape=',transform_data.shape)
         return None
-    print(transform_data[0])
+
     r = Image.fromarray(transform_data[0],'L')#.convert('L')
     g = Image.fromarray(transform_data[1],'L')#.convert('L')
     b = Image.fromarray(transform_data[2],'L')#.convert('L')
 
     image = Image.merge('RGB',(r,g,b))
+    image.save('/home/tony/git_project/fall_down_detection/data/'+str(num) + '.png','png')
 
-    #plt.imshow(image)
-    #plt.show()
-    image.save('/home/tony/git_project/fall_down_detection/data/'+str(num) + '.png', 'png')
 
     return image
 
 
 
-if __name__ == '__main__':
+if __name__=='__main__':
 
     fall_data = pd.read_csv('../data/fall_data.csv')
 
     num = fall_data.label.size
 
     for i in range(num):
-        sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200,1])
+        sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
         transform_data = transform_sensor_data(sensor_data)
-        data2image(transform_data,i)
+        data2image(transform_data, i)
 
