@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import data_graph as dp
 
-FALL_DATA_SAVE_FILE = "E:\Master\FallDetection\fall_down_detection.git\data\fall_data.csv"
+FALL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\\newfall_data.csv"
 
 def txt2csv(txt_file):
     """
@@ -88,7 +88,10 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
 
     acc_extract_data = acc_data.iloc[begin:end, 1:4].values
     gyro_extract_data = gyro_data.iloc[begin:end, 1:4].values
-    acc_data.i
+
+    #print(gyro_data.shape)
+    #print(os.path.exists(save_data_file))
+
     with open(save_data_file,"a+") as data_file:
         data_file.seek(0,os.SEEK_SET)
         if data_file.read()=="":
@@ -102,10 +105,12 @@ def extract_data(acc_csv_file,begin,end,label=0,save_data_file=FALL_DATA_SAVE_FI
         data_file.write(str(label))
 
         for data in acc_extract_data:
+
             line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
             data_file.write(line_data)
 
         for data in gyro_extract_data:
+            print(data.shape)
             line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
             data_file.write(line_data)
 
@@ -132,6 +137,8 @@ def find_txt_data_file(path):
 def main():
 
     path = 'E:\Master\FallDetection\MobiFall_Dataset_v2.0\sub31\FALLS\SDL'
+
+    #find_txt_data_file('E:\Master\FallDetection\MobiFall_Dataset_v2.0')
 
     for i in os.listdir(path):
         file = path + '\\' + i

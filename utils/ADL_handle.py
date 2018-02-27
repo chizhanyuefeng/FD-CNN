@@ -16,7 +16,7 @@ import pandas as pd
 import data_graph as dp
 # import matplotlib.pyplot as plt
 
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\fall_down_detection.git\data\adl_data.csv"
+ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\\adl_data.csv"
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
@@ -55,6 +55,8 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         data_file.seek(0, os.SEEK_END)
         #在数据每一行中，第一位代表数据标签。0代表跌倒数据,非0代表日常活动数据
         data_file.write(str(Label[label]))
+        #print('lable=',label,'qq')
+        #print(str(Label[label]))
 
         for data in acc_extract_data:
             line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
@@ -79,13 +81,13 @@ def main():
         if os.path.isfile(file):
             if ('annotated' in i) and ('csv' in i):
                 print('开始截取',i,'文件')
-                #dp.adl_line_chart(file)
-                dp.fall_line_chart(file)
+                dp.adl_line_chart(file)
+                #dp.fall_line_chart(file)
                 begin = input('起始：')
                 pdFile = pd.read_csv(file)
-                lableName = pdFile.iat[begin,11]
-                label = Label["BSC"]
-                extract_data(file, int(begin), int(begin) + 400,label)
+                begin_num = int(begin)
+                lableName = pdFile.label[begin_num]
+                extract_data(file, int(begin), int(begin) + 400,lableName)
 
     print("截取完成！")
 
