@@ -48,9 +48,6 @@ def adl_line_chart(csv_file):
     label_dict = {}
     for i in range(num):
         label_dict[data.label[i]] = i
-    print(len(label_dict))
-    label_dict_keys = label_dict.keys()
-    print(label_dict.keys())
 
     x = np.arange(num)
     plt.figure(1)
