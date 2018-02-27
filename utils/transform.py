@@ -58,7 +58,6 @@ def data2image(transform_data,num):
     image = Image.merge('RGB',(r,g,b))
     image.save('/home/tony/git_project/fall_down_detection/data/'+str(num) + '.png','png')
 
-
     return image
 
 

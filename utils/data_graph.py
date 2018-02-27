@@ -3,7 +3,7 @@
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
-import file_io as fio
+#import file_io as fio
 import numpy as np
 
 def fall_line_chart(csv_file):
@@ -46,13 +46,26 @@ def adl_line_chart(csv_file):
     num = data.timestamp.size
 
     x = np.arange(num)
+
+    plt.figure(1)
+    # 子表1绘制加速度传感器数据
+    plt.subplot(211)
     plt.plot(x, data.acc_x, label='x')
     plt.plot(x, data.acc_y, label='y')
     plt.plot(x, data.acc_z, label='z')
-
     # 添加解释图标
     plt.legend()
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
+
+    # 子表2绘制陀螺仪传感器数据
+    plt.subplot(212)
+    plt.plot(x, data.gyro_x, label='x')
+    plt.plot(x, data.gyro_y, label='y')
+    plt.plot(x, data.gyro_z, label='z')
+    # 添加解释图标
+    plt.legend()
+    plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
+
     plt.show()
 
 
