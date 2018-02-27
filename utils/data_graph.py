@@ -50,6 +50,7 @@ def adl_line_chart(csv_file):
     plt.figure(1)
     # 子表1绘制加速度传感器数据
     plt.subplot(211)
+    plt.title('acc')
     plt.plot(x, data.acc_x, label='x')
     plt.plot(x, data.acc_y, label='y')
     plt.plot(x, data.acc_z, label='z')
@@ -59,6 +60,7 @@ def adl_line_chart(csv_file):
 
     # 子表2绘制陀螺仪传感器数据
     plt.subplot(212)
+    plt.title('groy')
     plt.plot(x, data.gyro_x, label='x')
     plt.plot(x, data.gyro_y, label='y')
     plt.plot(x, data.gyro_z, label='z')
