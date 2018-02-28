@@ -107,7 +107,7 @@ def main():
     # line_chart(csv_name2)
     # line_chart(csv_name3)
 
-    adl_line_chart('/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/CHU/CHU_1_3_annotated.csv')
+    #adl_line_chart('/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/CHU/CHU_1_3_annotated.csv')
 
 
 if __name__ == '__main__':
