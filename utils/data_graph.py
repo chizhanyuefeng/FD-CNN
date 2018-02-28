@@ -50,7 +50,7 @@ def adl_line_chart(csv_file):
         label_dict[data.label[i]] = i
 
     x = np.arange(num)
-    plt.figure(1)
+    plt.figure(1,figsize=(100,60))
     # 子表1绘制加速度传感器数据
     plt.subplot(211)
     plt.title('acc')
@@ -61,11 +61,11 @@ def adl_line_chart(csv_file):
     acc_max = max(data.acc_x.max(),data.acc_y.max(),data.acc_z.max())
     acc_min = min(data.acc_x.min(),data.acc_y.min(),data.acc_z.min())
 
-    acc_y = np.arange(acc_min,acc_max,0.1)
+    acc_y = np.arange(acc_min,acc_max,0.5)
     for key in label_dict:
         value = np.zeros((acc_y.size)) +label_dict[key]
         plt.plot(value, acc_y, color = 'black')
-        plt.annotate(key,xy=(value[0],acc_max))
+        plt.annotate(key,xy=(value[0]-200,acc_max))
 
     # 添加解释图标
     plt.legend()
@@ -81,14 +81,15 @@ def adl_line_chart(csv_file):
     gyro_max = max(data.gyro_x.max(),data.gyro_y.max(),data.gyro_z.max())
     gyro_min = min(data.gyro_x.min(),data.gyro_y.min(),data.gyro_z.min())
 
-    gyro_y = np.arange(gyro_min,gyro_max,0.1)
+    gyro_y = np.arange(gyro_min,gyro_max,0.5)
     for key in label_dict:
         value = np.zeros((gyro_y.size)) +label_dict[key]
         plt.plot(value, gyro_y, color = 'black')
-        plt.annotate(key, xy=(value[0], gyro_max))
+        plt.annotate(key, xy=(value[0]-200, gyro_max))
     # 添加解释图标
     plt.legend()
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
+
 
     plt.show()
 
