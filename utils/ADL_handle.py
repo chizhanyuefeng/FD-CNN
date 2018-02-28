@@ -16,8 +16,9 @@ import pandas as pd
 import data_graph as dp
 # import matplotlib.pyplot as plt
 
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\\adl_data.csv"
-INDEX_FILE = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC\indexfile.csv'
+ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\BSC\\adl_data.csv"
+INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\BSC\indexfile.csv'
+path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
@@ -56,8 +57,6 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         data_file.seek(0, os.SEEK_END)
         #在数据每一行中，第一位代表数据标签。0代表跌倒数据,非0代表日常活动数据
         data_file.write(str(Label[label]))
-        #print('lable=',label,'qq')
-        #print(str(Label[label]))
 
         for data in acc_extract_data:
             line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
@@ -69,26 +68,28 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
         data_file.write("\n")
     print("从",annotated_file,"文件中提取",str((end-begin)/2),"份数据。\n已保存至",save_data_file)
-
+    datafile = pd.read_csv(save_data_file)
+    #position值表示save_data_file中excel存储数据位置的标号
+    position = len(datafile.label)+1
     with open(INDEX_FILE, "a+") as index_file:
         index_file.seek(0,os.SEEK_SET)
         if index_file.read()=="":
             index_file.write("Name")
+            index_file.write(","+"position")
             index_file.write("\n")
         index_file.seek(0,os.SEEK_END)
-        index_file.write(annotated_file)
+        index_file_data = annotated_file+","+str(position)
+        index_file.write(index_file_data)
         index_file.write("\n")
     print("已将文件处理完成加入索引！")
 
     return save_data_file
 
 def main():
-    path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
     count = 0
     for i in os.listdir(path):
         file = path + '\\' + i
         flag = 0
-        rownum = 0
         if os.path.isfile(INDEX_FILE):
             infile = pd.read_csv(INDEX_FILE)
             rownum = len(infile.Name)
@@ -110,10 +111,10 @@ def main():
 
     print("截取完成！")
 
-    #测试程序
-    f = pd.read_csv(ADL_DATA_SAVE_FILE)
-    print(f.head())
-    print(f.shape)
+    # #测试程序
+    # f = pd.read_csv(ADL_DATA_SAVE_FILE)
+    # print(f.head())
+    # print(f.shape)
 
 if __name__ == "__main__":
     main()
