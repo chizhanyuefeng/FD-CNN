@@ -16,9 +16,9 @@ import pandas as pd
 import data_graph as dp
 # import matplotlib.pyplot as plt
 
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\BSC\\adl_data.csv"
-INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\BSC\indexfile.csv'
-path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
+ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\CHU\\adl_data.csv"
+INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\CHU\indexfile.csv'
+path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\CHU'
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
@@ -93,18 +93,21 @@ def main():
         if os.path.isfile(INDEX_FILE):
             infile = pd.read_csv(INDEX_FILE)
             rownum = len(infile.Name)
-            for j in range(1,rownum):
+            for j in range(0,rownum):
                 if(file == infile.Name[j]):
                     flag = 1
         if flag != 1:
             if os.path.isfile(file):
                 if ('annotated' in i) and ('csv' in i) and (count<5):
                     print('开始截取',i,'文件')
-                    dp.adl_line_chart(file)
                     #dp.fall_line_chart(file)
-                    begin = input('起始：')
+                    #begin = input('起始：')
+                    begin = dp.adl_line_chart(file)
+                    if(begin == None):
+                        print("起始点获取错误，文件可能不存在！")
+                        break
                     pdFile = pd.read_csv(file)
-                    begin_num = int(begin)
+                    begin_num = int(begin)+200
                     labelName = pdFile.label[begin_num]
                     extract_data(file, int(begin), int(begin) + 400,labelName)
                     count=count+1
