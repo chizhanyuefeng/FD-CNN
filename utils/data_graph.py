@@ -5,6 +5,20 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+def on_button_press(event):
+    '''
+    鼠标点击响应事件
+    :param event:
+    :return:
+    '''
+    global coord_x
+    coord_x = event.xdata
+
+    plt.subplot(2,1,1)
+    plt.hlines(event.ydata,coord_x,coord_x+400)
+    plt.draw()
+    print(coord_x)
+
 def fall_line_chart(csv_file):
     '''
     绘制跌倒数据折线图
@@ -17,6 +31,7 @@ def fall_line_chart(csv_file):
 
     data = pd.read_csv(csv_file)
     num = data.timestamp.size
+
 
     x = np.arange(num)
     if 'acc' in csv_file:
@@ -36,11 +51,11 @@ def adl_line_chart(csv_file):
     '''
     绘制日常行为运动数据折线图
     :param csv_file: 日常行为运动数据图
-    :return:
+    :return: 获取最后一次的鼠标点击的x坐标值
     '''
     if os.path.exists(csv_file) == False:
         print(csv_file,'文件不存在！')
-        return csv_file
+        return None
     data = pd.read_csv(csv_file)
     num = data.timestamp.size
 
@@ -50,9 +65,9 @@ def adl_line_chart(csv_file):
         label_dict[data.label[i]] = i
 
     x = np.arange(num)
-    plt.figure(1,figsize=(100,60))
+    fig = plt.figure(1,figsize=(100,60))
     # 子表1绘制加速度传感器数据
-    plt.subplot(211)
+    plt.subplot(2,1,1)
     plt.title('acc')
     plt.plot(x, data.acc_x, label='x')
     plt.plot(x, data.acc_y, label='y')
@@ -61,18 +76,16 @@ def adl_line_chart(csv_file):
     acc_max = max(data.acc_x.max(),data.acc_y.max(),data.acc_z.max())
     acc_min = min(data.acc_x.min(),data.acc_y.min(),data.acc_z.min())
 
-    acc_y = np.arange(acc_min,acc_max,0.5)
     for key in label_dict:
-        value = np.zeros((acc_y.size)) +label_dict[key]
-        plt.plot(value, acc_y, color = 'black')
-        plt.annotate(key,xy=(value[0]-200,acc_max))
+        plt.vlines(label_dict[key],acc_min,acc_max)
+        plt.annotate(key,xy=(label_dict[key]-200,acc_max))
 
     # 添加解释图标
     plt.legend()
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
 
     # 子表2绘制陀螺仪传感器数据
-    plt.subplot(212)
+    plt.subplot(2,1,2)
     plt.title('gyro')
     plt.plot(x, data.gyro_x, label='x')
     plt.plot(x, data.gyro_y, label='y')
@@ -81,17 +94,19 @@ def adl_line_chart(csv_file):
     gyro_max = max(data.gyro_x.max(),data.gyro_y.max(),data.gyro_z.max())
     gyro_min = min(data.gyro_x.min(),data.gyro_y.min(),data.gyro_z.min())
 
-    gyro_y = np.arange(gyro_min,gyro_max,0.5)
     for key in label_dict:
-        value = np.zeros((gyro_y.size)) +label_dict[key]
-        plt.plot(value, gyro_y, color = 'black')
-        plt.annotate(key, xy=(value[0]-200, gyro_max))
+        plt.vlines(label_dict[key], gyro_min,gyro_max)
+        plt.annotate(key, xy=(label_dict[key]-200, gyro_max))
     # 添加解释图标
     plt.legend()
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
 
+    # 鼠标点击事件
+    fig.canvas.mpl_connect('button_press_event', on_button_press)
 
     plt.show()
+
+    return int(coord_x)
 
 
 def main():
@@ -99,16 +114,9 @@ def main():
     测试代码
     :return:
     """
-    # csv_name = fio.txt2csv("../data/BSC_acc_1_1.txt")
-    # csv_name2 = fio.txt2csv("../data/BSC_acc_1_2.txt")
-    # csv_name3 = fio.txt2csv("../data/BSC_acc_1_3.txt")
-    #
-    # line_chart(csv_name)
-    # line_chart(csv_name2)
-    # line_chart(csv_name3)
 
-    #adl_line_chart('/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/CHU/CHU_1_3_annotated.csv')
-
+    x = adl_line_chart('/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/CHU/CHU_1_3_annotated.csv')
+    print('pos:', int(x))
 
 if __name__ == '__main__':
     main()
