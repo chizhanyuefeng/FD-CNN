@@ -100,9 +100,12 @@ def main():
             if os.path.isfile(file):
                 if ('annotated' in i) and ('csv' in i) and (count<5):
                     print('开始截取',i,'文件')
-                    dp.adl_line_chart(file)
                     #dp.fall_line_chart(file)
-                    begin = input('起始：')
+                    #begin = input('起始：')
+                    begin = dp.adl_line_chart(file)
+                    if(begin == None):
+                        print("起始点获取错误，文件可能不存在！")
+                        break
                     pdFile = pd.read_csv(file)
                     begin_num = int(begin)+200
                     labelName = pdFile.label[begin_num]
