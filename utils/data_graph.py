@@ -6,9 +6,14 @@ import pandas as pd
 import numpy as np
 
 def on_button_press(event):
+    '''
+    鼠标点击响应事件
+    :param event:
+    :return:
+    '''
     global coord_x
     coord_x = event.xdata
-    
+
     plt.subplot(2,1,1)
     plt.hlines(event.ydata,coord_x,coord_x+400)
     plt.draw()
@@ -46,7 +51,7 @@ def adl_line_chart(csv_file):
     '''
     绘制日常行为运动数据折线图
     :param csv_file: 日常行为运动数据图
-    :return:
+    :return: 获取最后一次的鼠标点击的x坐标值
     '''
     if os.path.exists(csv_file) == False:
         print(csv_file,'文件不存在！')
