@@ -104,7 +104,7 @@ def main():
                     #dp.fall_line_chart(file)
                     begin = input('起始：')
                     pdFile = pd.read_csv(file)
-                    begin_num = int(begin)
+                    begin_num = int(begin)+200
                     labelName = pdFile.label[begin_num]
                     extract_data(file, int(begin), int(begin) + 400,labelName)
                     count=count+1
