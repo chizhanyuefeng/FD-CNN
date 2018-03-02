@@ -16,9 +16,9 @@ import pandas as pd
 import data_graph as dp
 # import matplotlib.pyplot as plt
 
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\CHU\\extract_CHU_data.csv"
-INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\CHU\indexfile.csv'
-path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\CHU'
+ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\BSC\extract_BSC_data.csv"
+INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\BSC\indexfile.csv'
+path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
