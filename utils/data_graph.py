@@ -16,6 +16,8 @@ def on_button_press(event):
 
     plt.subplot(2,1,1)
     plt.hlines(event.ydata,coord_x,coord_x+400)
+    plt.subplot(2, 1, 2)
+    plt.hlines(event.ydata, coord_x, coord_x + 400)
     plt.draw()
 
 def fall_line_chart(csv_file):
