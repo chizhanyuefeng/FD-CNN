@@ -10,6 +10,9 @@
 2.日常行为数据传感器采集频率为200hz，而跌倒数据采集频率为100hz，
 所以需要进步提取数据，并将提取的数据保存至新的csv文件中。
 
+3.向用户询问，一份csv文件需要提取几份数据。通过调用data_graph中
+adl_chart_for_extract_multi_data方法来获取需要截取的每段数据begin值，
+通过begin来进行数据保存。
 '''
 import os
 import pandas as pd
