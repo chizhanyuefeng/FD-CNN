@@ -109,6 +109,17 @@ def adl_line_chart(csv_file):
 
     return int(coord_x)
 
+def adl_chart_for_extract_multi_data(csv_file,data_num):
+    '''
+    绘制数据图表，从csv文件中截取data_num份数据
+    :param csv_file:
+    :param data_num:
+    :return: 返回每段数据的起始行，共data_num个值
+    '''
+    data_x = [30,100,150,200,400,600]
+
+    return data_x
+
 
 def main():
     """
