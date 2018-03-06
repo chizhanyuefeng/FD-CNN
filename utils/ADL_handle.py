@@ -12,7 +12,7 @@
 
 3.向用户询问，一份csv文件需要提取几份数据。通过调用data_graph中
 adl_chart_for_extract_multi_data方法来获取需要截取的每段数据begin值，
-通过begin来进行数据保存。
+通过begin来进行数据保存。-
 '''
 import os
 import pandas as pd
@@ -90,6 +90,7 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
 
 def main():
     count = 0
+    num = 0
     for i in os.listdir(path):
         file = path + '\\' + i
         flag = 0
@@ -99,20 +100,35 @@ def main():
             for j in range(0,rownum):
                 if(file == infile.Name[j]):
                     flag = 1
+        # if flag != 1:
+        #     if os.path.isfile(file):
+        #         if ('annotated' in i) and ('csv' in i) and (count<5):
+        #             print('开始截取',i,'文件')
+        #             #dp.fall_line_chart(file)
+        #             #begin = input('起始：')
+        #             begin = dp.adl_line_chart(file)
+        #             if(begin == None):
+        #                 print("起始点获取错误，文件可能不存在！")
+        #                 break
+        #             pdFile = pd.read_csv(file)
+        #             begin_num = int(begin)+200
+        #             labelName = pdFile.label[begin_num]
+        #             extract_data(file, int(begin), int(begin) + 400,labelName)
+        #             count=count+1
         if flag != 1:
             if os.path.isfile(file):
                 if ('annotated' in i) and ('csv' in i) and (count<5):
+                    num = int(input("请输入要截取数据的次数："))
                     print('开始截取',i,'文件')
-                    #dp.fall_line_chart(file)
-                    #begin = input('起始：')
-                    begin = dp.adl_line_chart(file)
+                    begin = dp.adl_chart_for_extract_multi_data(file,num)
                     if(begin == None):
                         print("起始点获取错误，文件可能不存在！")
                         break
-                    pdFile = pd.read_csv(file)
-                    begin_num = int(begin)+200
-                    labelName = pdFile.label[begin_num]
-                    extract_data(file, int(begin), int(begin) + 400,labelName)
+                    for j in range(0,num):
+                        pdFile = pd.read_csv(file)
+                        begin_num = begin[j]+200
+                        labelName = pdFile.label[begin_num]
+                        extract_data(file, begin[j], begin[j] + 400,labelName)
                     count=count+1
 
     print("截取完成！")
