@@ -20,9 +20,9 @@ import data_graph as dp
 # import matplotlib.pyplot as plt
 
 
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\BSC\extract_BSC_data.csv"
-INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\BSC\indexfile.csv'
-path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\BSC'
+ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\STN\\extract_STN_data.csv"
+INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\STN\indexfile.csv'
+path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\STN'
 
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
