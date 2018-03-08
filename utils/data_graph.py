@@ -2,23 +2,39 @@
 
 import os
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
 import pandas as pd
 import numpy as np
 
-def on_button_press(event):
+def on_backout(event):
+    print('button')
+
+def on_ok(event):
+    plt.close()
+
+def on_mouse_press(event):
     '''
     鼠标点击响应事件
     :param event:
     :return:
     '''
     global coord_x
+
+    if event.xdata <1:
+        return
+
     coord_x = event.xdata
 
     plt.subplot(2,1,1)
     plt.hlines(event.ydata,coord_x,coord_x+400)
+    #lines = plt.axhline()
+    #print(lines)
+    #lines.pop(0)
     plt.subplot(2, 1, 2)
     plt.hlines(event.ydata, coord_x, coord_x + 400)
+
     plt.draw()
+    print(event.xdata,',',event.ydata)
 
 def fall_line_chart(csv_file):
     '''
@@ -66,7 +82,7 @@ def adl_line_chart(csv_file):
         label_dict[data.label[i]] = i
 
     x = np.arange(num)
-    fig = plt.figure(1,figsize=(100,60))
+    fig = plt.figure(1,figsize=(15,7))
     # 子表1绘制加速度传感器数据
     plt.subplot(2,1,1)
     plt.title('acc')
@@ -103,11 +119,20 @@ def adl_line_chart(csv_file):
     plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
 
     # 鼠标点击事件
-    fig.canvas.mpl_connect('button_press_event', on_button_press)
+    fig.canvas.mpl_connect('button_press_event', on_mouse_press)
+    global backout_button,ok_button
+    backout_button=draw_button('backout',[0.93,0.8, 0.05, 0.03],on_backout)
+    ok_button=draw_button('ok', [0.93, 0.85, 0.05, 0.03],on_ok)
 
     plt.show()
 
     return int(coord_x)
+
+def draw_button(name,point,func):
+    point = plt.axes(point)
+    button = Button(point, name)
+    button.on_clicked(func)
+    return button
 
 def adl_chart_for_extract_multi_data(csv_file,data_num):
     '''
@@ -116,6 +141,7 @@ def adl_chart_for_extract_multi_data(csv_file,data_num):
     :param data_num:
     :return: 返回每段数据的起始行，共data_num个值
     '''
+
     data_x = [30,100,150,200,400,600]
 
     return data_x
