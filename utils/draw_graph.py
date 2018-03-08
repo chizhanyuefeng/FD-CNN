@@ -41,12 +41,12 @@ class ADL_data_graph(Data_graph):
             print(csv_file, '文件不存在！')
             return
         self.data = pd.read_csv(csv_file)
-        num = data.timestamp.size
+        num = self.data.timestamp.size
 
         # 获取标签和其最终的位置
         label_dict = {}
         for i in range(num):
-            label_dict[data.label[i]] = i
+            label_dict[self.data.label[i]] = i
 
         x = np.arange(num)
 
@@ -57,7 +57,7 @@ class ADL_data_graph(Data_graph):
         self.__graph_ui()
 
         # 鼠标点击事件
-        fig.canvas.mpl_connect('button_press_event', self.on_mouse_press)
+        self.figure.canvas.mpl_connect('button_press_event', self.on_mouse_press)
         global backout_button, ok_button
         backout_button = self.draw_button('backout', [0.93, 0.8, 0.05, 0.03], self.on_backout_button)
         ok_button = self.draw_button('ok', [0.93, 0.85, 0.05, 0.03], self.on_ok_button)
@@ -116,6 +116,10 @@ class ADL_data_graph(Data_graph):
 
     def update_graph(self,event):
         pass
+
+
+if __name__=='__main__':
+    adl = ADL_data_graph('/home/tony/fall_research/fall_data/MobiAct_Dataset_v2.0/Annotated Data/BSC/BSC_1_1_annotated.csv',0)
 
 
 
