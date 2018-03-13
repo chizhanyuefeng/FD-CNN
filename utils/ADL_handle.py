@@ -10,6 +10,9 @@
 2.日常行为数据传感器采集频率为200hz，而跌倒数据采集频率为100hz，
 所以需要进步提取数据，并将提取的数据保存至新的csv文件中。
 
+3.向用户询问，一份csv文件需要提取几份数据。通过调用data_graph中
+adl_chart_for_extract_multi_data方法来获取需要截取的每段数据begin值，
+通过begin来进行数据保存。
 '''
 import os
 import pandas as pd
@@ -19,6 +22,7 @@ import data_graph as dp
 ADL_DATA_SAVE_FILE = "/home/tony/git_project/fall_down_detection/data/ADL/SCH/SCH_data.csv"
 INDEX_FILE = '/home/tony/git_project/fall_down_detection/data/ADL/SCH/indexfile.csv'
 path = '/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/SCH'
+
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FILE):
@@ -98,7 +102,7 @@ def main():
                     flag = 1
         if flag != 1:
             if os.path.isfile(file):
-                if ('annotated' in i) and ('csv' in i) and (count<5):
+                if ('annotated' in i) and ('csv' in i) and (count<10):
                     print('开始截取',i,'文件')
                     #dp.fall_line_chart(file)
                     #begin = input('起始：')
