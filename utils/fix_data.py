@@ -72,7 +72,7 @@ def main():
     测试代码
     :return:
     """
-    fix_data(TEST_DATA_PATH,TEST_ROW,Y_NEGATION)
+    # fix_data(TEST_DATA_PATH,TEST_ROW,Y_NEGATION)
 
 if __name__ == '__main__':
     main()
