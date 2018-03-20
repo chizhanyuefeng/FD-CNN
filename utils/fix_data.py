@@ -16,8 +16,8 @@ X_NEGATION = 2 # 将x轴数据进行取反
 Y_NEGATION = 3 # 讲y轴数据进行取反
 
 #test
-TEST_DATA_PATH = 'E:\Master\FallDetection\\test_dataall.csv'
-TEST_ROW = 5
+# TEST_DATA_PATH = 'E:\Master\FallDetection\\test_dataall.csv'
+# TEST_ROW = 5
 
 def fix_data(data_file,row,fix_type):
     '''
