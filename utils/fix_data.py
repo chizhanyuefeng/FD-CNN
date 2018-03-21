@@ -13,7 +13,9 @@ import pandas as pd
 X_Y_INVERSION = 0 # 将x,y轴数据对调
 X_Y_NEGATION = 1 # 将x,y轴数据分别取反
 X_NEGATION = 2 # 将x轴数据进行取反
-Y_NEGATION = 3 # 讲y轴数据进行取反
+Y_NEGATION = 3 # 将y轴数据进行取反
+Y_Z_NEGATION = 4 # 将y,z进行取反
+X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 
 #test
 # TEST_DATA_PATH = 'E:\Master\FallDetection\\test_dataall.csv'
