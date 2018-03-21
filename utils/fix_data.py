@@ -17,7 +17,8 @@ X_NEGATION = 2 # 将x轴数据进行取反
 Y_NEGATION = 3 # 将y轴数据进行取反
 Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
-X_Z_NEGATION = 6 # 将想x,z进行取反
+X_Z_NEGATION = 6 # 将x,z进行取反
+
 
 #test
 TEST_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
