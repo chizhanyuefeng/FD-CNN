@@ -1,5 +1,6 @@
 # -*- coding:UTF-8 -*-
 
+import progressbar as pb
 import PIL.Image as Image
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,16 +32,16 @@ def transform_sensor_data(sensor_data,num):
 
     plt.subplot(211)
     plt.title('tranform')
-    plt.plot(x, transform_data[0], label='x')
-    plt.plot(x, transform_data[1], label='y')
-    plt.plot(x, transform_data[2], label='z')
+    plt.plot(x, transform_data[0], label='x', color='red')
+    plt.plot(x, transform_data[1], label='y', color='green')
+    plt.plot(x, transform_data[2], label='z', color='blue')
     plt.legend()
 
     plt.subplot(212)
     plt.title('origin')
-    plt.plot(x, re[0], label='x')
-    plt.plot(x, re[1], label='y')
-    plt.plot(x, re[2], label='z')
+    plt.plot(x, re[0], label='x', color='red')
+    plt.plot(x, re[1], label='y', color='green')
+    plt.plot(x, re[2], label='z', color='blue')
     plt.legend()
 
     #plt.show()
@@ -78,8 +79,12 @@ if __name__=='__main__':
 
     num = fall_data.label.size
 
+    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
+
     for i in range(num):
+        pbar.update(i + 1)
         sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
         transform_data = transform_sensor_data(sensor_data,i)
         data2image(transform_data, i)
 
+    pbar.finish()
