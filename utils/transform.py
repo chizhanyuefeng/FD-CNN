@@ -45,7 +45,7 @@ def transform_sensor_data(sensor_data,num):
     plt.legend()
 
     #plt.show()
-    plt.savefig('/home/tony/fall_research/fall_down_detection/data/ADL/SDL/figure/figure_'+str(num) + '.png')
+    plt.savefig('/home/tony/fall_research/fall_down_detection/data/ADL/BSC/figure/figure_'+str(num) + '.png')
     plt.close()
 
     transform_data = transform_data.reshape([3,20,20])
@@ -67,7 +67,7 @@ def data2image(transform_data,num):
     b = Image.fromarray(transform_data[2],'L')#.convert('L')
 
     image = Image.merge('RGB',(r,g,b))
-    image.save('/home/tony/fall_research/fall_down_detection/data/ADL/SDL/'+str(num) + '.png','png')
+    image.save('/home/tony/fall_research/fall_down_detection/data/ADL/BSC/'+str(num) + '.png','png')
 
     return image
 
@@ -75,7 +75,7 @@ def data2image(transform_data,num):
 
 if __name__=='__main__':
 
-    fall_data = pd.read_csv('../data/ADL/SDL/SDL_data.csv')
+    fall_data = pd.read_csv('../data/ADL/BSC/extract_BSC_data.csv')
 
     num = fall_data.label.size
 
