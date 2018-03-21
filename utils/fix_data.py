@@ -8,6 +8,7 @@
 
 import os
 import pandas as pd
+import transform as tr
 
 # 数据错误类型
 X_Y_INVERSION = 0 # 将x,y轴数据对调
@@ -16,9 +17,11 @@ X_NEGATION = 2 # 将x轴数据进行取反
 Y_NEGATION = 3 # 将y轴数据进行取反
 Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
+X_Z_NEGATION = 6 # 将想x,z进行取反
 
 #test
-# TEST_DATA_PATH = 'E:\Master\FallDetection\\test_dataall.csv'
+TEST_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
+TEST_ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
 # TEST_ROW = 5
 
 def fix_data(data_file,row,fix_type):
@@ -42,25 +45,44 @@ def fix_data(data_file,row,fix_type):
 
     if fix_type == 0:
         for i in range(1,len(wrongdata.columns)-1,3):
-            temp = wrongdata.iloc[row,i]
-            wrongdata.iat[row,i] = wrongdata.iloc[row,i+1]
-            wrongdata.iat[row,i+1] = temp
+            temp = wrongdata.iloc[row, i]
+            wrongdata.iat[row, i] = wrongdata.iloc[row, i + 1]
+            wrongdata.iat[row, i + 1] = temp
         wrongdata.to_csv(data_file,index=False)
 
     elif fix_type == 1:
         for i in range(1,len(wrongdata.columns)-1,3):
-            wrongdata.iat[row,i] = 0-wrongdata.iloc[row,i]
-            wrongdata.iat[row,i+1] = 0-wrongdata.iloc[row,i+1]
+            wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
+            wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
         wrongdata.to_csv(data_file,index=False)
 
     elif fix_type == 2:
         for i in range(1,len(wrongdata.columns)-1,3):
-            wrongdata.iat[row,i] = 0-wrongdata.iloc[row,i]
+            wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
         wrongdata.to_csv(data_file,index=False)
 
     elif fix_type == 3:
         for i in range(1,len(wrongdata.columns)-1,3):
-            wrongdata.iat[row,i+1] = 0-wrongdata.iloc[row,i+1]
+            wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
+        wrongdata.to_csv(data_file,index=False)
+
+    elif fix_type == 4:
+        for i in range(1,len(wrongdata.columns)-1,3):
+            wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
+            wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
+        wrongdata.to_csv(data_file,index=False)
+
+    elif fix_type == 5:
+        for i in range(1,len(wrongdata.columns)-1,3):
+            wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
+            wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
+            wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
+        wrongdata.to_csv(data_file,index=False)
+
+    elif fix_type == 6:
+        for i in range(1,len(wrongdata.columns)-1,3):
+            wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
+            wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
         wrongdata.to_csv(data_file,index=False)
 
     else:
@@ -74,6 +96,12 @@ def main():
     测试代码
     :return:
     """
+    # Test Code
+    error_data = pd.read_csv(TEST_ERROR_DATA_PATH)
+    for i in range(len(error_data.row)):
+        Row = error_data.iloc[i, 0]
+        Type = error_data.iloc[i, 1]
+        fix_data(TEST_DATA_PATH,Row,Type)
     # fix_data(TEST_DATA_PATH,TEST_ROW,Y_NEGATION)
 
 if __name__ == '__main__':
