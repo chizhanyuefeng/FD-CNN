@@ -6,6 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+SAVEFIG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newfig\\newfig'
+SAVEIMG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newimg\\newimg'
+SOURCE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
+
 def transform_sensor_data(sensor_data,num):
     '''
     将跌倒数据规范化
@@ -45,7 +49,7 @@ def transform_sensor_data(sensor_data,num):
     plt.legend()
 
     #plt.show()
-    plt.savefig('/home/tony/fall_research/fall_down_detection/data/ADL/FOL/figure/figure_'+str(num) + '.png')
+    plt.savefig(SAVEFIG_PATH + str(num) + '.png')
     plt.close()
 
     transform_data = transform_data.reshape([3,20,20])
@@ -67,15 +71,14 @@ def data2image(transform_data,num):
     b = Image.fromarray(transform_data[2],'L')#.convert('L')
 
     image = Image.merge('RGB',(r,g,b))
-    image.save('/home/tony/fall_research/fall_down_detection/data/ADL/FOL/'+str(num) + '.png','png')
-
+    image.save(SAVEIMG_PATH + str(num) + '.png','png')
     return image
 
 
 
 if __name__=='__main__':
 
-    fall_data = pd.read_csv('../data/ADL/FOL/FOL_data.csv')
+    fall_data = pd.read_csv(SOURCE_DATA_PATH)
 
     num = fall_data.label.size
 
