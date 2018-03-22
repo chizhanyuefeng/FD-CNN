@@ -50,6 +50,7 @@ def transform_sensor_data(sensor_data,num):
 
     #plt.show()
     plt.savefig(SAVEFIG_PATH + str(num) + '.png')
+
     plt.close()
 
     transform_data = transform_data.reshape([3,20,20])
