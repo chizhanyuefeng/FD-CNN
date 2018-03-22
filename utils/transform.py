@@ -49,7 +49,6 @@ def transform_sensor_data(sensor_data,num):
     plt.legend()
 
     #plt.show()
-
     plt.savefig(SAVEFIG_PATH + str(num) + '.png')
     plt.close()
 
@@ -79,7 +78,6 @@ def data2image(transform_data,num):
 
 if __name__=='__main__':
 
-<<<<<<< HEAD
     fall_data = pd.read_csv(SOURCE_DATA_PATH)
 
     num = fall_data.label.size
