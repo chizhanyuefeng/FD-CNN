@@ -88,7 +88,9 @@ if __name__=='__main__':
     for i in range(num):
         pbar.update(i + 1)
         sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
-        transform_data = transform_sensor_data(sensor_data,i)
-        data2image(transform_data, i)
-
+        if not np.isnan(sensor_data).any():
+            transform_data = transform_sensor_data(sensor_data,i)
+            data2image(transform_data, i)
+        #if i>60 and i<70:
+        #     print(sensor_data)
     pbar.finish()

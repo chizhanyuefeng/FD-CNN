@@ -19,10 +19,9 @@ Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
 
-
-#test
-TEST_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
-TEST_ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
+DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
+ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
+WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\wrong_data.csv'
 # TEST_ROW = 5
 
 def fix_data(data_file,row,fix_type):
@@ -50,28 +49,33 @@ def fix_data(data_file,row,fix_type):
             wrongdata.iat[row, i] = wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 1] = temp
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 1:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 2:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 3:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 4:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 5:
         for i in range(1,len(wrongdata.columns)-1,3):
@@ -79,16 +83,44 @@ def fix_data(data_file,row,fix_type):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     elif fix_type == 6:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
         wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
 
     else:
         print('错误类型发生错误！')
-        return 'error'
+        with open(WRONG_DATA_PATH, "a+") as wrong_data:
+            wrong_data.seek(0, os.SEEK_SET)
+            if wrong_data.read() == "":
+                wrong_data.write("ROW,label")
+                for i in range(1200):
+                    wrong_data.write("," + str(i + 1))
+                wrong_data.write("\n")
+        check_wrong_data = pd.read_csv(WRONG_DATA_PATH)
+        with open(WRONG_DATA_PATH, "a+") as wrong_data:
+            wrong_data.seek(0, os.SEEK_END)
+            flag = 0
+            for data in check_wrong_data.ROW:
+                if data == row:
+                    flag = 1
+            if flag == 0:
+                wrong_data.write(str(row))
+                for data in wrongdata.iloc[row, :]:
+                    line_data = "," + str(data)
+                    wrong_data.write(line_data)
+                wrong_data.write("\n")
+                print("错误数据已保存至文件", WRONG_DATA_PATH)
+                for i in range(1,len(wrongdata.iloc[row])):
+                    wrongdata.iat[row,i] = None
+                wrongdata.to_csv(data_file, index=False)
+                print("第" + str(row) + "行置空")
+            else:
+                print("第" + str(row) + "行错误数据已存在在" + WRONG_DATA_PATH + "文件中！")
 
     return data_file
 
@@ -97,13 +129,12 @@ def main():
     测试代码
     :return:
     """
-    # Test Code
-    error_data = pd.read_csv(TEST_ERROR_DATA_PATH)
+    error_data = pd.read_csv(ERROR_DATA_PATH)
     for i in range(len(error_data.row)):
         Row = error_data.iloc[i, 0]
         Type = error_data.iloc[i, 1]
-        fix_data(TEST_DATA_PATH,Row,Type)
-    # fix_data(TEST_DATA_PATH,TEST_ROW,Y_NEGATION)
+        fix_data(DATA_PATH,Row,Type)
+    # print(pd.read_csv(DATA_PATH).iloc[80:90,1:3])
 
 if __name__ == '__main__':
     main()
