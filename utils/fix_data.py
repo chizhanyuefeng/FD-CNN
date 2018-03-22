@@ -8,6 +8,7 @@
 
 import os
 import pandas as pd
+import numpy as np
 import transform as tr
 
 # 数据错误类型
@@ -19,7 +20,7 @@ Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
 
-DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
+DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\extract_BSC_data.csv'
 ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
 WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\wrong_data.csv'
 # TEST_ROW = 5
@@ -124,6 +125,29 @@ def fix_data(data_file,row,fix_type):
 
     return data_file
 
+def DeleteEmpty(data_file):
+
+    '''
+    将修正后的数据中空行剔除.
+    :param daya_file: 数据文件路径
+    :return: 返回剔除空行的文件
+    '''
+    try:
+        Empty_data = pd.read_csv(data_file)
+    except IOError:
+        print(data_file, "文件无法打开或不存在！")
+        return data_file
+    print(data_file, '读取成功！')
+
+    for i in range(len(Empty_data.label)-1,-1,-1):
+        row_data = Empty_data.iat[i, 1]
+        print(row_data)
+        if np.isnan(row_data).any():
+            Empty_data.drop(i,axis=0, inplace=True)
+    Empty_data.to_csv(data_file, index=False)
+
+    return data_file
+
 def main():
     """
     测试代码
@@ -134,7 +158,7 @@ def main():
         Row = error_data.iloc[i, 0]
         Type = error_data.iloc[i, 1]
         fix_data(DATA_PATH,Row,Type)
-    # print(pd.read_csv(DATA_PATH).iloc[80:90,1:3])
+    DeleteEmpty(DATA_PATH)
 
 if __name__ == '__main__':
     main()
