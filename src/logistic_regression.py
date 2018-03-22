@@ -79,7 +79,7 @@ def main():
 
     y_ = logistic_regression(train_x)
 
-    with tf.name_scope('loss')
+    with tf.name_scope('loss'):
         loss = tf.reduce_mean(tf.square(y_-label_y))
 
     with tf.name_scope('gradient'):
@@ -103,3 +103,5 @@ def main():
 
 if __name__=='__main__':
     main()
+
+
