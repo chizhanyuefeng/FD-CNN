@@ -5,25 +5,10 @@
 '''
 
 import tensorflow as tf
-import numpy as np
-import pandas as pd
+import dataset
 
 INPUT_NUM = 400
 OUTPUT_NUM = 2
-
-def read_data(data_path):
-    '''
-    读取跌倒和日常数据
-    :param data_path:　跌到数据和日常数据的文件路径
-    :return:　
-    '''
-    # TODO:从csv文件读取数据
-    train_x = np.array((2000,400))
-    train_y = np.array((2000,1))
-    test_x = np.array((50,400))
-    test_y = np.array((50,1))
-
-    return train_x,train_y,test_x,test_y
 
 def wight_variable(shape):
     '''
@@ -58,20 +43,9 @@ def logistic_regression(x):
         y = tf.nn.sigmoid(tf.multiply(x,wights)+biases)
     return y
 
-def get_data_batch(size):
-    '''
-    获取size份数据
-    :param size: batchsize
-    :return:
-    '''
-    # TODO: 需要实现从数据中随机获取size份数据,采用抽样不放回策略
-    batch_x = np.array([2,3])
-    batch_y = np.array([2,3])
-    return batch_x,batch_y
-
 def main():
 
-    x,y,test_x,test_y = read_data('')
+    x,y,test_x,test_y = dataset.read_data('')
 
     with tf.name_scope('input_label_init'):
         train_x = tf.placeholder(tf.int16,[None,400])
@@ -94,7 +68,7 @@ def main():
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         for step in range(10000):
-            batch_x,batch_y = get_data_batch(50)
+            batch_x,batch_y = dataset.get_data_batch(50)
             sess.run(train,feed_dict={train_x:batch_x,label_y:batch_y})
 
             if step%100 ==0:
