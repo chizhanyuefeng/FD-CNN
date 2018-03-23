@@ -9,7 +9,6 @@
 import os
 import pandas as pd
 import numpy as np
-import transform as tr
 
 # 数据错误类型
 X_Y_INVERSION = 0 # 将x,y轴数据对调
@@ -23,6 +22,9 @@ X_Z_NEGATION = 6 # 将x,z进行取反
 DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\extract_BSC_data.csv'
 ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
 WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\wrong_data.csv'
+ROOT_FILE_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL'
+MERGE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\merge_fall_data.csv'
+HAVE_MERGED_INDEX_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\indexfile.csv'
 # TEST_ROW = 5
 
 def fix_data(data_file,row,fix_type):
@@ -116,7 +118,7 @@ def fix_data(data_file,row,fix_type):
                     wrong_data.write(line_data)
                 wrong_data.write("\n")
                 print("错误数据已保存至文件", WRONG_DATA_PATH)
-                for i in range(1,len(wrongdata.iloc[row])):
+                for i in range(0,len(wrongdata.iloc[row])):
                     wrongdata.iat[row,i] = None
                 wrongdata.to_csv(data_file, index=False)
                 print("第" + str(row) + "行置空")
@@ -148,17 +150,74 @@ def DeleteEmpty(data_file):
 
     return data_file
 
+def Mergedata(root_dir,save_data_file):
+    fs = os.listdir(root_dir)
+    for f in fs:
+        root_path = os.path.join(root_dir, f)
+        if not os.path.isdir(root_path):
+            # print(f)
+            if f != 'error_data.csv' and f != 'indexfile.csv' and f != 'wrong_data.csv':
+                # test code
+                # print(f)
+                # source_data = pd.read_csv(root_path)
+                # for i in range(0, len(source_data.label)):
+                #     print(i)
+                #     for data in source_data.iloc[i,:]:
+                #         line_data = ',' + str(data)
+                flag = 0
+                with open(HAVE_MERGED_INDEX_PATH, "a+") as index_file:
+                    index_file.seek(0, os.SEEK_SET)
+                    if index_file.read() == "":
+                        index_file.write("Name")
+                        index_file.write("\n")
+                index_data = pd.read_csv(HAVE_MERGED_INDEX_PATH)
+                for file_name in index_data.iloc[:,0]:
+                    if f == file_name:
+                        flag = 1
+                if flag == 0:
+                    with open(save_data_file, "a+") as data_file:
+                        data_file.seek(0, os.SEEK_SET)
+                        if data_file.read() == "":
+                            data_file.write("label")
+                            for i in range(1200):
+                                data_file.write("," + str(i + 1))
+                            data_file.write("\n")
+                        data_file.seek(0, os.SEEK_END)
+                        source_data = pd.read_csv(root_path)
+                        for i in range(0,len(source_data.label)):
+                            for data in source_data.iloc[i,:]:
+                                line_data = str(data) + ','
+                                data_file.write(line_data)
+                            data_file.write("\n")
+                        data_file.write("\n")
+                    with open(HAVE_MERGED_INDEX_PATH, "a+") as index_file:
+                        index_file.seek(0, os.SEEK_END)
+                        index_file.write(f)
+                        index_file.write("\n")
+                    print("已将文件" + f + "添加进" + save_data_file + "文件中" )
+                else:
+                    print(f + "文件已经合成完毕！")
+
+        else:
+            # print(root_path)
+            Mergedata(root_path,save_data_file)
+
 def main():
     """
-    测试代码
-    :return:
+    修正数据并剔除空行
     """
-    error_data = pd.read_csv(ERROR_DATA_PATH)
-    for i in range(len(error_data.row)):
-        Row = error_data.iloc[i, 0]
-        Type = error_data.iloc[i, 1]
-        fix_data(DATA_PATH,Row,Type)
-    DeleteEmpty(DATA_PATH)
+    # error_data = pd.read_csv(ERROR_DATA_PATH)
+    # for i in range(len(error_data.row)):
+    #     Row = error_data.iloc[i, 0]
+    #     Type = error_data.iloc[i, 1]
+    #     fix_data(DATA_PATH,Row,Type)
+    # DeleteEmpty(DATA_PATH)
+    """
+    合并数据
+    """
+    Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
+
+
 
 if __name__ == '__main__':
     main()
