@@ -26,13 +26,13 @@ def biases_variable(shape):
     return tf.Variable(bias,dtype=tf.float32)
 
 
-def nn(nn_name,input_data,input_num,out_num):
+def net(nn_name,input_data,input_num,out_num):
     '''
     建立一层网络层
     :param input_data: 网络层输入tensor
     :param input_num: 网络输入神经单元个数
     :param out_num: 网络输出神经单元个数
-    :return:
+    :return: 返回测试结果
     '''
     with tf.name_scope(nn_name):
         wights = wights_variable([input_num,out_num])
@@ -41,15 +41,34 @@ def nn(nn_name,input_data,input_num,out_num):
 
     return tf.nn.relu(output)
 
+def dnn(x):
+    '''
+    神经网络
+    :param x: 输入值
+    :return: 网络输出层
+    '''
 
+    net1 = net('frist_net',x,1200,512)
+    net2 = net('second_net',net1,512,64)
+    net3 = net('third_net',net2,64,2)
+
+    return net3
 
 def main():
 
     train_x,train_y,test_x,test_y = dataset.read_data()
 
     with tf.name_scope('input'):
-        x = tf.placeholder(dtype=tf.float32,shape=[None,1200])
-        label = tf.placeholder(shape=[None,2])
+        x = tf.placeholder(tf.float32,[None,1200])
+        label = tf.placeholder(tf.float32,[None,2])
+
+    y_ = dnn(x)
+
+    with tf.name_scope("loss"):
+        loss = tf.nn.softmax_cross_entropy_with_logits(labels=label,logits=y_)
+
+
+
 
 
 
