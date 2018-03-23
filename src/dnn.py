@@ -26,15 +26,21 @@ def biases_variable(shape):
     return tf.Variable(bias,dtype=tf.float32)
 
 
-def nn(input_data,input_num,out_num):
+def nn(nn_name,input_data,input_num,out_num):
     '''
-    网络层
+    建立一层网络层
     :param input_data: 网络层输入tensor
     :param input_num: 网络输入神经单元个数
     :param out_num: 网络输出神经单元个数
     :return:
     '''
-    
+    with tf.name_scope(nn_name):
+        wights = wights_variable([input_num,out_num])
+        biases = biases_variable([out_num])
+        output = tf.multiply(input_data,wights)+biases
+
+    return tf.nn.relu(output)
+
 
 
 def main():
