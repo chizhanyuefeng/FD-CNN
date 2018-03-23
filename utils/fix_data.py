@@ -128,7 +128,7 @@ def fix_data(data_file,row,fix_type):
             else:
                 print("第" + str(row) + "行错误数据已存在在" + WRONG_DATA_PATH + "文件中！")
 
-def DeleteEmpty(data_file):
+def deleteEmpty(data_file):
 
     '''
     将修正后的数据中空行剔除.
@@ -151,7 +151,7 @@ def DeleteEmpty(data_file):
     print(len(Empty_data.label))
     print("文件剔除空行成功！")
 
-def Mergedata(root_dir,save_data_file):
+def mergedata(root_dir,save_data_file):
     fs = os.listdir(root_dir)
     for f in fs:
         root_path = os.path.join(root_dir, f)
@@ -193,7 +193,7 @@ def Mergedata(root_dir,save_data_file):
 
         else:
             # print(root_path)
-            Mergedata(root_path,save_data_file)
+            mergedata(root_path,save_data_file)
 
 def main():
 
@@ -205,10 +205,10 @@ def main():
     #     fix_data(DATA_PATH,Row,Type)
 
     # 剔除空行
-    # DeleteEmpty(DATA_PATH)
+    # deleteEmpty(DATA_PATH)
 
     # 合并数据
-    Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
+    mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
 
 
 
