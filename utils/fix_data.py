@@ -20,13 +20,13 @@ X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
 
 # 修改数据所用宏
-DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\SDL\SDL_data.csv'
+DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\\fall_data.csv'
 ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\BSC\error_data.csv'
 WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\BSC\wrong_data.csv'
 
 # 合并数据所用宏
 ROOT_FILE_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL'
-MERGE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\merge_fall_data.csv'
+MERGE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\merge_FALL_data.csv'
 HAVE_MERGED_INDEX_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\indexfile.csv'
 
 
@@ -144,7 +144,7 @@ def DeleteEmpty(data_file):
 
     print(len(Empty_data.label))
     for i in range(len(Empty_data.label)-1,-1,-1):
-        row_data = Empty_data.iat[i, 1]
+        row_data = Empty_data.iloc[i, 1]
         if np.isnan(row_data).any():
             Empty_data.drop(i,axis=0, inplace=True)
     Empty_data.to_csv(data_file, index=False)
@@ -158,13 +158,6 @@ def Mergedata(root_dir,save_data_file):
         if not os.path.isdir(root_path):
             # print(f)
             if f != 'error_data.csv' and f != 'indexfile.csv' and f != 'wrong_data.csv':
-                # test code
-                # print(f)
-                # source_data = pd.read_csv(root_path)
-                # for i in range(0, len(source_data.label)):
-                #     print(i)
-                #     for data in source_data.iloc[i,:]:
-                #         line_data = ',' + str(data)
                 flag = 0
                 with open(HAVE_MERGED_INDEX_PATH, "a+") as index_file:
                     index_file.seek(0, os.SEEK_SET)
@@ -190,7 +183,6 @@ def Mergedata(root_dir,save_data_file):
                                 line_data = str(data) + ','
                                 data_file.write(line_data)
                             data_file.write("\n")
-                        data_file.write("\n")
                     with open(HAVE_MERGED_INDEX_PATH, "a+") as index_file:
                         index_file.seek(0, os.SEEK_END)
                         index_file.write(f)
@@ -213,11 +205,10 @@ def main():
     #     fix_data(DATA_PATH,Row,Type)
 
     # 剔除空行
-    DeleteEmpty(DATA_PATH)
+    # DeleteEmpty(DATA_PATH)
 
     # 合并数据
-
-    # Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
+    Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
 
 
 
