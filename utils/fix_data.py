@@ -20,9 +20,9 @@ X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
 
 # 修改数据所用宏
-DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\\fall_data.csv'
-ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\error_data.csv'
-WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\wrong_data.csv'
+DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\SDL\SDL_data.csv'
+ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\BSC\error_data.csv'
+WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL\BSC\wrong_data.csv'
 
 # 合并数据所用宏
 ROOT_FILE_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL'
@@ -128,8 +128,6 @@ def fix_data(data_file,row,fix_type):
             else:
                 print("第" + str(row) + "行错误数据已存在在" + WRONG_DATA_PATH + "文件中！")
 
-    return data_file
-
 def DeleteEmpty(data_file):
 
     '''
@@ -144,13 +142,14 @@ def DeleteEmpty(data_file):
         return data_file
     print(data_file, '读取成功！')
 
+    print(len(Empty_data.label))
     for i in range(len(Empty_data.label)-1,-1,-1):
         row_data = Empty_data.iat[i, 1]
         if np.isnan(row_data).any():
             Empty_data.drop(i,axis=0, inplace=True)
     Empty_data.to_csv(data_file, index=False)
-
-    return data_file
+    print(len(Empty_data.label))
+    print("文件剔除空行成功！")
 
 def Mergedata(root_dir,save_data_file):
     fs = os.listdir(root_dir)
