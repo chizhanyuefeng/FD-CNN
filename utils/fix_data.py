@@ -19,13 +19,16 @@ Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
 
+# 修改数据所用宏
 DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\extract_BSC_data.csv'
 ERROR_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\error_data.csv'
 WRONG_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\wrong_data.csv'
+
+# 合并数据所用宏
 ROOT_FILE_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL'
 MERGE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\merge_fall_data.csv'
 HAVE_MERGED_INDEX_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\indexfile.csv'
-# TEST_ROW = 5
+
 
 def fix_data(data_file,row,fix_type):
     '''
@@ -206,16 +209,16 @@ def main():
     """
     修正数据并剔除空行
     """
-    # error_data = pd.read_csv(ERROR_DATA_PATH)
-    # for i in range(len(error_data.row)):
-    #     Row = error_data.iloc[i, 0]
-    #     Type = error_data.iloc[i, 1]
-    #     fix_data(DATA_PATH,Row,Type)
-    # DeleteEmpty(DATA_PATH)
+    error_data = pd.read_csv(ERROR_DATA_PATH)
+    for i in range(len(error_data.row)):
+        Row = error_data.iloc[i, 0]
+        Type = error_data.iloc[i, 1]
+        fix_data(DATA_PATH,Row,Type)
+    DeleteEmpty(DATA_PATH)
     """
     合并数据
     """
-    Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
+    # Mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
 
 
 
