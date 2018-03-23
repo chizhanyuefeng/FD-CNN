@@ -1,7 +1,9 @@
 # -*- coding:UTF-8 -*-
 
 '''
-将读取的数据直接用于tensorflow
+需求:输入batchsize.输出batchsize大小的batch_x(跌倒或日常数据)以及
+    对应的label值batch_y.一个label格式[跌倒bool,日常bool].
+    例如:一份跌倒数据的label为[1,0].日常数据的label为[0,1]
 '''
 import pandas as pd
 import numpy as np
