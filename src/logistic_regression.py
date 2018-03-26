@@ -40,7 +40,7 @@ def logistic_regression(x):
     with tf.name_scope('logistic'):
         wights = wight_variable([400,1])
         biases = bias_varibale([1])
-        y = tf.nn.sigmoid(tf.multiply(x,wights)+biases)
+        y = tf.nn.sigmoid(tf.matmul(x,wights)+biases)
     return y
 
 def main():

@@ -1,11 +1,10 @@
 # -*- coding:UTF-8 -*-
 
 '''
-使用简单的神经网络模型来完成
+使用神经网络模型来完成
 '''
 
 import tensorflow as tf
-import dataset
 
 def wights_variable(shape):
     '''
@@ -37,7 +36,7 @@ def net(nn_name,input_data,input_num,out_num):
     with tf.name_scope(nn_name):
         wights = wights_variable([input_num,out_num])
         biases = biases_variable([out_num])
-        output = tf.multiply(input_data,wights)+biases
+        output = tf.matmul(input_data,wights)+biases
 
     return tf.nn.relu(output)
 
@@ -56,7 +55,6 @@ def dnn(x):
 
 def main():
 
-    train_x,train_y,test_x,test_y = dataset.read_data()
 
     with tf.name_scope('input'):
         x = tf.placeholder(tf.float32,[None,1200])
@@ -65,14 +63,27 @@ def main():
     y_ = dnn(x)
 
     with tf.name_scope("loss"):
-        loss = tf.nn.softmax_cross_entropy_with_logits(labels=label,logits=y_)
+        cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=label,logits=y_)
+        loss = tf.reduce_mean(cross_entropy)
 
+    with tf.name_scope('gradient'):
+        train = tf.train.GradientDescentOptimizer(0.001).minimize(loss)
 
+    with tf.name_scope('accuracy'):
+        correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(label, 1))
+        correct_prediction = tf.cast(correct_prediction, tf.float32)
+        accuracy = tf.reduce_mean(correct_prediction)
 
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
 
-
-
-
+        for step in range(2000):
+            # TODO:獲取batch函數尚未完成
+            batch_x ,batch_label = next_batch(50)
+            if step%100==0:
+                current_accuracy = sess.run(accuracy,feed_dict={x:batch_x,label:batch_label})
+                print('第',step,'步,准确率为',current_accuracy)
+            sess.run(train,feed_dict={x:batch_x,label:batch_label})
 
 
 
