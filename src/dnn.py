@@ -36,7 +36,7 @@ def net(nn_name,input_data,input_num,out_num):
     with tf.name_scope(nn_name):
         wights = wights_variable([input_num,out_num])
         biases = biases_variable([out_num])
-        output = tf.multiply(input_data,wights)+biases
+        output = tf.matmul(input_data,wights)+biases
 
     return tf.nn.relu(output)
 
