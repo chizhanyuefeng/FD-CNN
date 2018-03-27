@@ -4,6 +4,7 @@
 CNN模型
 '''
 
+import numpy as np
 import tensorflow as tf
 import dataset
 
@@ -63,7 +64,7 @@ def fall_net(x):
     '''
 
     with tf.name_scope('reshape'):
-        tf.reshape(x,[-1,20,20,3])
+        x = tf.reshape(x,[-1,20,20,3])
 
     with tf.name_scope('conv1'):
         # value shape:[-1,18,18,32]
@@ -128,16 +129,19 @@ def train_model():
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
+    data = dataset.DataSet('../data/dataset')
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
-        for step in range(10000):
-            #TODO:
-            batch_x,batch_y
+        for step in range(4000):
+            batch_x, batch_y = data.next_batch(50)
             if step%100==0:
-                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_: batch_y, keep_prob: 1.0})
+                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
                 print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
-            train.run(feed_dict={x: batch_x, y_: batch_y, keep_prob: 0.5})
+            train.run(feed_dict={x: batch_x, y: batch_y, keep_prob: 0.5})
         print("训练完毕！")
+        test_x,test_y = data.get_test_data()
+        print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
 
 def test_model():
     '''

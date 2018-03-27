@@ -11,8 +11,8 @@ import pandas as pd
 import numpy as np
 
 
-DATA_PATH = '../data/MERGE'
-data = '../MERGE/data.csv'
+DATA_PATH = '../data/dataset'
+#data = '../data/dataset/data.csv'
 
 class DataSet:
     # 定义私有属性
@@ -29,11 +29,12 @@ class DataSet:
         fs = os.listdir(data_path)
         for f in fs:
             file_path = os.path.join(data_path, f)
-            if f == 'merge_FALL_data.csv':
+            if f == 'fall_data.csv':
                 fall_data = pd.read_csv(file_path,index_col=False)
-            if f == 'merge_ADL_data.csv':
+            if f == 'adl_data.csv':
                 adl_data = pd.read_csv(file_path,index_col=False)
         alldata = fall_data.append(adl_data)
+        print(alldata.shape)
         np.random.shuffle(alldata.values)
         # alldata.to_csv(data, index=False)
         for i in range(0,self._num_examples):
@@ -112,7 +113,12 @@ class DataSet:
             batch_x = self.train_x[start:end]
             batch_y = self.train_y[start:end]
 
-        return batch_x,batch_y
+        return np.array(batch_x),np.array(batch_y)
+
+    def get_test_data(self):
+        x = self.test_x
+        y = self.test_y
+        return np.array(x),np.array(y)
 
 def main():
     # Test Code
@@ -122,10 +128,11 @@ def main():
     # print(dataset.train_y[150])
     # print(dataset.test_x)
     # print(dataset.test_y)
-    for i in range(0,45):
-        dataset.next_batch(50)
-        print(dataset.index_in_epoch)
-        print(dataset.epochs_completed)
+    #for i in range(0,45):
+    x,y=dataset.get_test_data()
+    num = np.array(y)
+    print(num.shape)
+    #print(dataset.epochs_completed)
 
 
 if __name__ == '__main__':
