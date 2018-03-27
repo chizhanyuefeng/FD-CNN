@@ -20,3 +20,4 @@ _book
 .idea
 *.pyc
 *.png
+src
