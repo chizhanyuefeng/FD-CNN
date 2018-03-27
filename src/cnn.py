@@ -5,6 +5,7 @@ CNN模型
 '''
 
 import tensorflow as tf
+import dataset
 
 
 def wights_variable(shape):

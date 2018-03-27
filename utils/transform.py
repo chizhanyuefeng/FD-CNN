@@ -8,7 +8,12 @@ import pandas as pd
 
 SAVEFIG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newfig\\newfig'
 SAVEIMG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newimg\\newimg'
-SOURCE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\SDL_data.csv'
+SOURCE_DATA_PATH = '../data/MERGE/merge_ADL_data.csv'
+
+DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
+DATASET_ADL_PATH = '../data/dataset/adl_data.csv'
+
+SHOW_FIGURE = False
 
 def transform_sensor_data(sensor_data,num):
     '''
@@ -26,34 +31,36 @@ def transform_sensor_data(sensor_data,num):
         transform_data[1][i] = (sensor_data[3*i+ 1] + 20) * 6 # G通道，传感器y值
         transform_data[2][i] = (sensor_data[3*i+ 2] + 20) * 6 # B通道，传感器z值
 
-        re[0][i] = (sensor_data[3 * i] )  # R通道，传感器x值
-        re[1][i] = (sensor_data[3 * i + 1])   # G通道，传感器y值
-        re[2][i] = (sensor_data[3 * i + 2])   # B通道，传感器z值
+        if SHOW_FIGURE:
+            re[0][i] = (sensor_data[3 * i] )  # R通道，传感器x值
+            re[1][i] = (sensor_data[3 * i + 1])   # G通道，传感器y值
+            re[2][i] = (sensor_data[3 * i + 2])   # B通道，传感器z值
 
-    x = np.arange(400)
+    if SHOW_FIGURE:
+        x = np.arange(400)
+        plt.figure(1)
 
-    plt.figure(1)
+        plt.subplot(211)
+        plt.title('tranform')
+        plt.plot(x, transform_data[0], label='x', color='red')
+        plt.plot(x, transform_data[1], label='y', color='green')
+        plt.plot(x, transform_data[2], label='z', color='blue')
+        plt.legend()
 
-    plt.subplot(211)
-    plt.title('tranform')
-    plt.plot(x, transform_data[0], label='x', color='red')
-    plt.plot(x, transform_data[1], label='y', color='green')
-    plt.plot(x, transform_data[2], label='z', color='blue')
-    plt.legend()
+        plt.subplot(212)
+        plt.title('origin')
+        plt.plot(x, re[0], label='x', color='red')
+        plt.plot(x, re[1], label='y', color='green')
+        plt.plot(x, re[2], label='z', color='blue')
+        plt.legend()
 
-    plt.subplot(212)
-    plt.title('origin')
-    plt.plot(x, re[0], label='x', color='red')
-    plt.plot(x, re[1], label='y', color='green')
-    plt.plot(x, re[2], label='z', color='blue')
-    plt.legend()
+        #plt.show()
+        plt.savefig(SAVEFIG_PATH + str(num) + '.png')
 
-    #plt.show()
-    plt.savefig(SAVEFIG_PATH + str(num) + '.png')
+        plt.close()
 
-    plt.close()
+    transform_data = transform_data.reshape([1200,])
 
-    transform_data = transform_data.reshape([3,20,20])
     return transform_data
 
 def data2image(transform_data,num):
@@ -75,22 +82,38 @@ def data2image(transform_data,num):
     image.save(SAVEIMG_PATH + str(num) + '.png','png')
     return image
 
-
-
 if __name__=='__main__':
 
-    fall_data = pd.read_csv(SOURCE_DATA_PATH)
+    # fall_data = pd.read_csv(SOURCE_DATA_PATH)
+    #
+    # num = fall_data.label.size
+    #
+    # pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
+    #
+    # for i in range(num):
+    #     pbar.update(i + 1)
+    #     sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
+    #     if not np.isnan(sensor_data).any():
+    #         transform_data = transform_sensor_data(sensor_data,i)
+    #         data2image(transform_data, i)
+    #     #if i>60 and i<70:
+    #     #     print(sensor_data)
+    # pbar.finish()
 
-    num = fall_data.label.size
+    #write_data = pd.read_csv(DATASET_FALL_PATH)
+    data = pd.read_csv(SOURCE_DATA_PATH,index_col=False)
 
-    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
+    num = data.label.size
+    #pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
 
     for i in range(num):
-        pbar.update(i + 1)
-        sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
-        if not np.isnan(sensor_data).any():
-            transform_data = transform_sensor_data(sensor_data,i)
-            data2image(transform_data, i)
-        #if i>60 and i<70:
-        #     print(sensor_data)
-    pbar.finish()
+        #pbar.update(i + 1)
+        sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, ])
+        transform_data = transform_sensor_data(sensor_data,i)
+        #print(transform_data)
+        for j in range(1200):
+            data.iat[i,j+1] = transform_data[j]
+
+    data.to_csv(DATASET_ADL_PATH,index=False)
+
+    #pbar.finish()
