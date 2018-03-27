@@ -10,8 +10,9 @@ import os
 import pandas as pd
 import numpy as np
 
-DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE'
-data = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\data.csv'
+
+DATA_PATH = '../data/MERGE'
+data = '../MERGE/data.csv'
 
 class DataSet:
     # 定义私有属性
@@ -125,6 +126,7 @@ def main():
         dataset.next_batch(50)
         print(dataset.index_in_epoch)
         print(dataset.epochs_completed)
+
 
 if __name__ == '__main__':
     main()

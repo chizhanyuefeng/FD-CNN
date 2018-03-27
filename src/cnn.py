@@ -6,6 +6,7 @@ CNN模型
 
 import tensorflow as tf
 
+
 def wights_variable(shape):
     '''
     权重变量tensor
@@ -109,7 +110,33 @@ def train_model():
     训练模型,并将训练的模型参数进行保存
     :return: 返回训练好模型参数
     '''
-    pass
+    with tf.name_scope('input'):
+        x = tf.placeholder(tf.float32,[None,1200])
+        y = tf.placeholder(tf.float32,[None,2])
+    y_,keep_prob = fall_net(x)
+
+    with tf.name_scope('loss'):
+        cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y,logits=y_)
+        loss = tf.reduce_mean(cross_entropy)
+
+    with tf.name_scope('optimizer'):
+        train = tf.train.AdamOptimizer(0.001).minimize(loss)
+
+    with tf.name_scope('accuracy'):
+        correct_prediction = tf.equal(tf.argmax(y_,1),tf.argmax(y,1))
+        correct_prediction = tf.cast(correct_prediction,tf.float32)
+        accuracy = tf.reduce_mean(correct_prediction)
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for step in range(10000):
+            #TODO:
+            batch_x,batch_y
+            if step%100==0:
+                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_: batch_y, keep_prob: 1.0})
+                print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
+            train.run(feed_dict={x: batch_x, y_: batch_y, keep_prob: 0.5})
+        print("训练完毕！")
 
 def test_model():
     '''
