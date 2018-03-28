@@ -20,4 +20,6 @@ _book
 .idea
 *.pyc
 *.png
-src
+model
+log
+
