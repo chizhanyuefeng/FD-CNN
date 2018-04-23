@@ -16,9 +16,13 @@ import os
 import pandas as pd
 import data_graph as dp
 
-ADL_DATA_SAVE_FILE = "/home/tony/fall_research/fall_detection/data/raw_data/ADL/CHU/CHU_data.csv"
-INDEX_FILE = '/home/tony/fall_research/fall_detection/data/raw_data/ADL/CHU/indexfile.csv'
+ADL_DATA_SAVE_FILE = "../data/raw_data/ADL/CHU/CHU_data.csv"
+INDEX_FILE = '../data/raw_data/ADL/CHU/indexfile.csv'
+
+# 1-23
 path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA01'
+# 1-15
+#path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SE15'
 
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
@@ -73,11 +77,11 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         data_file.write(str(Label[label]))
 
         for data in acc_extract_data:
-            line_data = ","+str((data[0]+acc_up)/acc_scale)+","+str((data[1]+acc_up)/acc_scale)+","+str((data[2]+acc_up)/acc_scale)
+            line_data = ","+str(int((data[0]+acc_up)/acc_scale))+","+str(int((data[1]+acc_up)/acc_scale))+","+str(int((data[2]+acc_up)/acc_scale))
             data_file.write(line_data)
 
         for data in gyro_extract_data:
-            line_data = ","+str((data[0]+gyro_up)/gyro_scale)+","+str((data[1]+gyro_up)/gyro_scale)+","+str((data[2]+gyro_up)/gyro_scale)
+            line_data = ","+str(int((data[0]+gyro_up)/gyro_scale))+","+str(int((data[1]+gyro_up)/gyro_scale))+","+str(int((data[2]+gyro_up)/gyro_scale))
             data_file.write(line_data)
         #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
         data_file.write("\n")
