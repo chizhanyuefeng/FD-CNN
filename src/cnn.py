@@ -11,8 +11,8 @@ import dataset
 MODEL_SEVE_PATH = '../model/model.ckpt'
 
 # 超参数
-CLASS_NUM = 5
-cLASS_LIST = [0,2,3,4,6]
+CLASS_LIST = [0,2,3,4,6,7,9]
+CLASS_NUM = len(CLASS_LIST)
 LEARNING_RATE = 0.001
 TRAIN_STEP = 10000
 BATCH_SIZE = 50
@@ -138,7 +138,7 @@ def train_model():
         accuracy = tf.reduce_mean(correct_prediction)
         tf.summary.scalar("loss", accuracy)
 
-    data = dataset.DataSet('../data/dataset',cLASS_LIST)
+    data = dataset.DataSet('../data/dataset',CLASS_LIST)
     saver = tf.train.Saver()
     merged = tf.summary.merge_all()
 
@@ -181,7 +181,7 @@ def test_model():
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
-    data = dataset.DataSet('../data/dataset',cLASS_LIST)
+    data = dataset.DataSet('../data/dataset',CLASS_LIST)
     saver = tf.train.Saver()
     with tf.Session() as sess:
         saver.restore(sess, "../model/model.ckpt")

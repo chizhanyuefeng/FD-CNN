@@ -7,12 +7,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/CHU/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/CHU/image/'
-SOURCE_DATA_PATH = '../data/raw_data/ADL/CHU/CHU_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/SCH/figure/'
+SAVEIMG_PATH = '../data/raw_data/ADL/SCH/image/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/SCH/SCH_data.csv'
 
 DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
-DATASET_ADL_PATH = '../data/dataset/jum_data.csv'
+DATASET_ADL_PATH = '../data/dataset/sch_data.csv'
 
 
 
@@ -114,7 +114,7 @@ def make_dataset():
 
     for i in range(num):
         sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, ])
-        transform_data = transform_sensor_data(sensor_data,i).reshape([1200,])
+        transform_data = transform_sensor_data(sensor_data,i,0,1,True).reshape([1200,])
         for j in range(1200):
             data.iat[i,j+1] = transform_data[j]
 
@@ -122,7 +122,7 @@ def make_dataset():
 
 if __name__=='__main__':
 
-    make_figure()
+    #make_figure()
 
-    #　make_dataset()
+    make_dataset()
     pass
