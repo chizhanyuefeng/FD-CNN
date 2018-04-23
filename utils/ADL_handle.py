@@ -16,13 +16,13 @@ import os
 import pandas as pd
 import data_graph as dp
 
-ADL_DATA_SAVE_FILE = "../data/raw_data/ADL/CHU/CHU_data.csv"
-INDEX_FILE = '../data/raw_data/ADL/CHU/indexfile.csv'
+ADL_DATA_SAVE_FILE = "../data/raw_data/ADL/SCH/SCH_data.csv"
+INDEX_FILE = '../data/raw_data/ADL/SCH/indexfile.csv'
 
 # 1-23
-path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA01'
+#path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA23'
 # 1-15
-#path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SE15'
+path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SE15'
 
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
@@ -129,7 +129,7 @@ def main():
                     #begin_num = int(begin)+200
                     #labelName = pdFile.label[begin_num]
 
-                    extract_data(file, int(begin), int(begin) + 200,'CHU')
+                    extract_data(file, int(begin), int(begin) + 200,'SCH')
                     count=count+1
 
     print("截取完成！")
