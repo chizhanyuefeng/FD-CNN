@@ -4,15 +4,16 @@
 需求:输入batchsize.输出batchsize大小的batch_x(跌倒或日常数据)以及
     对应的label值batch_y.一个label格式[跌倒bool,日常bool].
     例如:一份跌倒数据的label为[1,0].日常数据的label为[0,1]
+
+    Dataset类,构造(数据文件夹路径,分类)
+    例如:[0,1,2]代表:'FALL','STD','WAL'
 '''
 
 import os
 import pandas as pd
 import numpy as np
 
-
 DATA_PATH = '../data/dataset'
-#data = '../data/dataset/data.csv'
 
 class DataSet:
     # 定义私有属性
@@ -22,33 +23,45 @@ class DataSet:
     _test_y = []
     _index_in_epoch = 0
     _epochs_completed = 0
-    _num_examples = 2000
+    _num_examples = 0
 
     # 定义构造方法
-    def __init__(self,data_path):
+    def __init__(self,data_path,class_list):
         fs = os.listdir(data_path)
+        all_data = pd.DataFrame()
+        class_num = len(class_list)
         for f in fs:
             file_path = os.path.join(data_path, f)
-            if f == 'fall_data.csv':
-                fall_data = pd.read_csv(file_path,index_col=False)
-            if f == 'adl_data.csv':
-                adl_data = pd.read_csv(file_path,index_col=False)
-        alldata = fall_data.append(adl_data)
-        np.random.shuffle(alldata.values)
-        # alldata.to_csv(data, index=False)
+            if 'csv' in f:
+                data = pd.read_csv(file_path,index_col=False)
+                all_data = all_data.append(data)
+
+        np.random.shuffle(all_data.values)
+        self._num_examples = class_num * 1000
+
         for i in range(0,self._num_examples):
-            self._train_x.append(alldata.iloc[i, 1:1201])
-            if alldata.iloc[i,0] == 0:
-                self._train_y.append([1,0])
-            else:
-                self._train_y.append([0,1])
-        # print(len(alldata.label))
-        for i in range(self._num_examples,len(alldata.label)):
-            self._test_x.append(alldata.iloc[i,1:1201])
-            if alldata.iloc[i,0] == 0:
-                self._test_y.append([1,0])
-            else:
-                self._test_y.append([0,1])
+            label = all_data.iloc[i, 0]
+            if label not in class_list:
+                continue
+            # 提取传感器数据
+            self._train_x.append(all_data.iloc[i, 1:1201])
+            # 创建y
+            loc = class_list.index(label)
+            y = [0 for i in range(class_num)]
+            y[loc] = 1
+            self._train_y.append(y)
+
+        for i in range(self._num_examples,len(all_data.label)):
+            label = all_data.iloc[i, 0]
+            if label not in class_list:
+                continue
+            # 提取传感器数据
+            self._test_x.append(all_data.iloc[i, 1:1201])
+            # 创建y
+            loc = class_list.index(label)
+            y = [0 for i in range(class_num)]
+            y[loc] = 1
+            self._test_y.append(y)
 
     @property
     def train_x(self):
@@ -126,17 +139,19 @@ class DataSet:
 
 def main():
     # Test Code
-    dataset = DataSet(DATA_PATH)
+    dataset = DataSet(DATA_PATH,[0,3,6])
     # print(dataset.index_in_epoch)
     # print(dataset.train_x[1999])
     # print(dataset.train_y[150])
     # print(dataset.test_x)
     # print(dataset.test_y)
     #for i in range(0,45):
-    x,y=dataset.get_test_data()
+    x,y=dataset.get_train_data()
     num = np.array(y)
     print(num.shape)
     #print(dataset.epochs_completed)
+
+
 
 
 if __name__ == '__main__':

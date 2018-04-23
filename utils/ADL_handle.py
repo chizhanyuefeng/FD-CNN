@@ -3,13 +3,11 @@
 '''
 用于处理日常行为数据。
 根据下载下来的数据文件，日常行为的数据文件解析和提取与跌到数据文件处理存在不同之处。
-
 需要实现的功能：
 1.通过调用data_graph里面的adl_line_chart方法查看需要截取的数据范围，
 获取需要截取的数据。
 2.日常行为数据传感器采集频率为200hz，而跌倒数据采集频率为100hz，
 所以需要进步提取数据，并将提取的数据保存至新的csv文件中。
-
 3.向用户询问，一份csv文件需要提取几份数据。通过调用data_graph中
 adl_chart_for_extract_multi_data方法来获取需要截取的每段数据begin值，
 通过begin来进行数据保存。
@@ -17,12 +15,10 @@ adl_chart_for_extract_multi_data方法来获取需要截取的每段数据begin�
 import os
 import pandas as pd
 import data_graph as dp
-# import matplotlib.pyplot as plt
 
-
-ADL_DATA_SAVE_FILE = "E:\Master\FallDetection\\fall_down_detection.git\data\ADL\FOL\\extract_FOL_data.csv"
-INDEX_FILE = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\FOL\indexfile.csv'
-path = 'E:\Master\FallDetection\MobiAct_Dataset_v2.0\Annotated Data\FOL'
+ADL_DATA_SAVE_FILE = "/home/tony/fall_research/fall_detection/data/raw_data/ADL/CHU/CHU_data.csv"
+INDEX_FILE = '/home/tony/fall_research/fall_detection/data/raw_data/ADL/CHU/indexfile.csv'
+path = '/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA01'
 
 Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
@@ -37,9 +33,6 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
     :param save_data_file: 攫取的数据存储文件
     :return: 返回存储好的文件
     """
-    if (end-begin)!=400:
-        print('数据截取长度不为400份')
-        return 'error'
     try:
         annotated_data = pd.read_csv(annotated_file)
     except IOError:
@@ -48,8 +41,24 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
     else:
         print(annotated_file,"成功读取")
 
-    acc_extract_data = annotated_data.iloc[begin:end:2, 2:5].values
-    gyro_extract_data = annotated_data.iloc[begin:end:2, 5:8].values
+    acc_extract_data = annotated_data.iloc[begin:end, 6:9].values
+    #print(annotated_data.iloc[:, 6:9].values.reshape(-1,))
+    acc_max = max(annotated_data.iloc[:, 6:9].values.reshape(-1,))
+    acc_min = min(annotated_data.iloc[:, 6:9].values.reshape(-1,))
+    acc_up = 0
+    if acc_min<0:
+        acc_up = -acc_min
+    acc_scale = (acc_max-acc_min)/255 +1
+
+    gyro_extract_data = annotated_data.iloc[begin:end, 3:6].values
+
+    gyro_max = max(annotated_data.iloc[:, 3:6].values.reshape(-1,))
+    gyro_min = min(annotated_data.iloc[:, 3:6].values.reshape(-1,))
+    gyro_up = 0
+    if gyro_min < 0:
+        gyro_up = -gyro_min
+    gyro_scale = (gyro_max - gyro_min) / 255 + 1
+
 
     with open(save_data_file, "a+") as data_file:
         data_file.seek(0,os.SEEK_SET)
@@ -64,11 +73,11 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
         data_file.write(str(Label[label]))
 
         for data in acc_extract_data:
-            line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
+            line_data = ","+str((data[0]+acc_up)/acc_scale)+","+str((data[1]+acc_up)/acc_scale)+","+str((data[2]+acc_up)/acc_scale)
             data_file.write(line_data)
 
         for data in gyro_extract_data:
-            line_data = ","+str(data[0])+","+str(data[1])+","+str(data[2])
+            line_data = ","+str((data[0]+gyro_up)/gyro_scale)+","+str((data[1]+gyro_up)/gyro_scale)+","+str((data[2]+gyro_up)/gyro_scale)
             data_file.write(line_data)
         #传感器有加速度和陀螺仪，所以提取完陀螺仪后自动完成换行，方便提取新的一行数据
         data_file.write("\n")
@@ -93,7 +102,7 @@ def extract_data(annotated_file,begin,end,label,save_data_file=ADL_DATA_SAVE_FIL
 def main():
     count = 0
     for i in os.listdir(path):
-        file = path + '\\' + i
+        file = path + '/' + i
         flag = 0
         if os.path.isfile(INDEX_FILE):
             infile = pd.read_csv(INDEX_FILE)
@@ -103,18 +112,20 @@ def main():
                     flag = 1
         if flag != 1:
             if os.path.isfile(file):
-                if ('annotated' in i) and ('csv' in i) and (count<10):
+                if (('D07' in i) or ('D08' in i) or ('D09' in i) or ('D10' in i)) and ('csv' in i):
                     print('开始截取',i,'文件')
                     #dp.fall_line_chart(file)
                     #begin = input('起始：')
-                    begin = dp.adl_line_chart(file)
+                    data,num = dp.adl_line_chart(file)
+                    begin = int(data[num-1])
                     if(begin == None):
                         print("起始点获取错误，文件可能不存在！")
                         break
-                    pdFile = pd.read_csv(file)
-                    begin_num = int(begin)+200
-                    labelName = pdFile.label[begin_num]
-                    extract_data(file, int(begin), int(begin) + 400,labelName)
+                    #pdFile = pd.read_csv(file)
+                    #begin_num = int(begin)+200
+                    #labelName = pdFile.label[begin_num]
+
+                    extract_data(file, int(begin), int(begin) + 200,'CHU')
                     count=count+1
 
     print("截取完成！")
@@ -126,3 +137,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    #print(a.all())
+

@@ -10,6 +10,13 @@ import dataset
 
 MODEL_SEVE_PATH = '../model/model.ckpt'
 
+# 超参数
+CLASS_NUM = 5
+cLASS_LIST = [0,2,3,4,6]
+LEARNING_RATE = 0.001
+TRAIN_STEP = 10000
+BATCH_SIZE = 50
+
 def wights_variable(shape):
     '''
     权重变量tensor
@@ -35,7 +42,6 @@ def conv2d(x,kernel):
     :param kernel: 卷积核
     :return: 返回卷积后的结果
     '''
-
     return tf.nn.conv2d(x,kernel,strides=[1,1,1,1],padding='SAME')
 
 def max_pooling_2x2(x):
@@ -101,8 +107,8 @@ def fall_net(x):
         drop_out = tf.nn.dropout(fc1_output,keep_prob)
 
     with tf.name_scope('fc2'):
-        fc2_wights = wights_variable([512,2])
-        fc2_biases = biases_variable([2])
+        fc2_wights = wights_variable([512,CLASS_NUM])
+        fc2_biases = biases_variable([CLASS_NUM])
         fc2_output = tf.matmul(drop_out,fc2_wights)+fc2_biases
 
     return fc2_output,keep_prob
@@ -115,7 +121,7 @@ def train_model():
     '''
     with tf.name_scope('input_dataset'):
         x = tf.placeholder(tf.float32,[None,1200])
-        y = tf.placeholder(tf.float32,[None,2])
+        y = tf.placeholder(tf.float32,[None,CLASS_NUM])
     y_,keep_prob = fall_net(x)
 
     with tf.name_scope('loss'):
@@ -124,7 +130,7 @@ def train_model():
         tf.summary.scalar("loss", loss)
 
     with tf.name_scope('optimizer'):
-        train = tf.train.AdamOptimizer(0.001).minimize(loss)
+        train = tf.train.AdamOptimizer(LEARNING_RATE).minimize(loss)
 
     with tf.name_scope('accuracy'):
         correct_prediction = tf.equal(tf.argmax(y_,1),tf.argmax(y,1))
@@ -132,7 +138,7 @@ def train_model():
         accuracy = tf.reduce_mean(correct_prediction)
         tf.summary.scalar("loss", accuracy)
 
-    data = dataset.DataSet('../data/dataset')
+    data = dataset.DataSet('../data/dataset',cLASS_LIST)
     saver = tf.train.Saver()
     merged = tf.summary.merge_all()
 
@@ -140,8 +146,8 @@ def train_model():
         sess.run(tf.global_variables_initializer())
         train_writer = tf.summary.FileWriter("../log/", sess.graph)
 
-        for step in range(5000):
-            batch_x, batch_y = data.next_batch(50)
+        for step in range(TRAIN_STEP):
+            batch_x, batch_y = data.next_batch(BATCH_SIZE)
             if step%100==0:
                 train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
                 print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
@@ -153,10 +159,10 @@ def train_model():
         train_writer.close()
         save_path = saver.save(sess, MODEL_SEVE_PATH)
         print("训练完毕,权重保存至:%s"%(save_path))
-
-
-        test_x, test_y = data.get_test_data()
-        print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
+        #
+        # 
+        # test_x, test_y = data.get_test_data()
+        # print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
 
 def test_model():
     '''
@@ -167,7 +173,7 @@ def test_model():
     tf.reset_default_graph()
     with tf.name_scope('input'):
         x = tf.placeholder(tf.float32,[None,1200])
-        y = tf.placeholder(tf.float32,[None,2])
+        y = tf.placeholder(tf.float32,[None,CLASS_NUM])
     y_,keep_prob = fall_net(x)
 
     with tf.name_scope('accuracy'):
@@ -175,37 +181,39 @@ def test_model():
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
-    data = dataset.DataSet('../data/dataset')
+    data = dataset.DataSet('../data/dataset',cLASS_LIST)
     saver = tf.train.Saver()
     with tf.Session() as sess:
         saver.restore(sess, "../model/model.ckpt")
         test_x, test_y = data.get_test_data()
         print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
-        print(test_y.shape)
 
 
 def demo_run(data):
     if data.shape!=[1,1200]:
         print('数据格式不合法:',data.shape)
         return None
-
-    tf.reset_default_graph()
-    with tf.name_scope('input'):
-        x = tf.placeholder(tf.float32, [None, 1200])
-        #y = tf.placeholder(tf.float32, [None, 2])
-    y_, keep_prob = fall_net(x)
-    saver = tf.train.Saver()
-    with tf.Session() as sess:
-        saver.restore(sess, "../model/model.ckpt")
-        result = sess.run(y_,feed_dict={x: data, keep_prob: 1.0})
-        print('预测结果为:',result)
+    #
+    # tf.reset_default_graph()
+    # with tf.name_scope('input'):
+    #     x = tf.placeholder(tf.float32, [None, 1200])
+    #     #y = tf.placeholder(tf.float32, [None, 2])
+    # y_, keep_prob = fall_net(x)
+    # saver = tf.train.Saver()
+    # with tf.Session() as sess:
+    #     saver.restore(sess, "../model/model.ckpt")
+    #     result = sess.run(y_,feed_dict={x: data, keep_prob: 1.0})
+    #     print('预测结果为:',result)
 
 
 if __name__=='__main__':
 
-    #train_model()
-    #test_model()
-
-    pd.read_csv()
+    train_model()
+    test_model()
+    #
+    # data = pd.read_csv('../data/dataset/fall_data.csv')
+    # data.
+    #
+    # print(data)
 
     #demo_run()

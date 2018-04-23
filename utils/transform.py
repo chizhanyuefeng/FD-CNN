@@ -1,3 +1,4 @@
+
 # -*- coding:UTF-8 -*-
 
 import progressbar as pb
@@ -6,16 +7,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newfig\\newfig'
-SAVEIMG_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\ADL\SDL\\newimg\\newimg'
-SOURCE_DATA_PATH = '../data/MERGE/merge_ADL_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/CHU/figure/'
+SAVEIMG_PATH = '../data/raw_data/ADL/CHU/image/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/CHU/CHU_data.csv'
 
 DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
-DATASET_ADL_PATH = '../data/dataset/adl_data.csv'
+DATASET_ADL_PATH = '../data/dataset/jum_data.csv'
 
-SHOW_FIGURE = False
 
-def transform_sensor_data(sensor_data,num):
+
+def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,SHOW_FIGURE = False):
     '''
     将跌倒数据规范化
     :param sensor_data: 长度为1200的数组
@@ -27,9 +28,9 @@ def transform_sensor_data(sensor_data,num):
 
     for i in range(400):
         # 传感器数据大小敢为-20~20，需要将其值拓展为0~255的数值
-        transform_data[0][i] = (sensor_data[3*i] + 20) * 6 # R通道，传感器x值
-        transform_data[1][i] = (sensor_data[3*i+ 1] + 20) * 6 # G通道，传感器y值
-        transform_data[2][i] = (sensor_data[3*i+ 2] + 20) * 6 # B通道，传感器z值
+        transform_data[0][i] = (sensor_data[3*i] + data_move) * data_scale # R通道，传感器x值
+        transform_data[1][i] = (sensor_data[3*i+ 1] + data_move) * data_scale # G通道，传感器y值
+        transform_data[2][i] = (sensor_data[3*i+ 2] + data_move) * data_scale # B通道，传感器z值
 
         if SHOW_FIGURE:
             re[0][i] = (sensor_data[3 * i] )  # R通道，传感器x值
@@ -59,7 +60,7 @@ def transform_sensor_data(sensor_data,num):
 
         plt.close()
 
-    transform_data = transform_data.reshape([1200,])
+    transform_data = transform_data.reshape([3,20,20])
 
     return transform_data
 
@@ -82,38 +83,46 @@ def data2image(transform_data,num):
     image.save(SAVEIMG_PATH + str(num) + '.png','png')
     return image
 
-if __name__=='__main__':
+def make_figure():
+    '''
+    将未处理数据进行可视化，生成figure和对应的image
+    :return:
+    '''
+    fall_data = pd.read_csv(SOURCE_DATA_PATH)
 
-    # fall_data = pd.read_csv(SOURCE_DATA_PATH)
-    #
-    # num = fall_data.label.size
-    #
-    # pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
-    #
-    # for i in range(num):
-    #     pbar.update(i + 1)
-    #     sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
-    #     if not np.isnan(sensor_data).any():
-    #         transform_data = transform_sensor_data(sensor_data,i)
-    #         data2image(transform_data, i)
-    #     #if i>60 and i<70:
-    #     #     print(sensor_data)
-    # pbar.finish()
+    num = fall_data.label.size
 
-    #write_data = pd.read_csv(DATASET_FALL_PATH)
+    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
+
+    for i in range(num):
+        pbar.update(i + 1)
+        sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
+        if not np.isnan(sensor_data).any():
+            transform_data = transform_sensor_data(sensor_data,i,0,1,True)
+            data2image(transform_data, i)
+    pbar.finish()
+
+def make_dataset():
+    '''
+    生成规范数据集
+    :return:
+    '''
+    # 将未处理数据（即范围-20-20的数据）转化为0-250，并将数据转为rgb存储
     data = pd.read_csv(SOURCE_DATA_PATH,index_col=False)
 
     num = data.label.size
-    #pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
 
     for i in range(num):
-        #pbar.update(i + 1)
         sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, ])
-        transform_data = transform_sensor_data(sensor_data,i)
-        #print(transform_data)
+        transform_data = transform_sensor_data(sensor_data,i).reshape([1200,])
         for j in range(1200):
             data.iat[i,j+1] = transform_data[j]
 
     data.to_csv(DATASET_ADL_PATH,index=False)
 
-    #pbar.finish()
+if __name__=='__main__':
+
+    make_figure()
+
+    #　make_dataset()
+    pass

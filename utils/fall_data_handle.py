@@ -26,7 +26,8 @@ def txt2csv(txt_file):
     # 将txt文件转化为csv文件格式名
     csv_name = txt_file.replace("txt", "csv")
     # 新建csv文件
-    with open(csv_name, "w+") as file_w:
+    # 下面的代码是为moblieFall进行的转化
+    '''with open(csv_name, "w+") as file_w:
         for line in lines:
             if "#" in line:
                 continue
@@ -44,6 +45,20 @@ def txt2csv(txt_file):
             if line.isspace():
                 continue
             file_w.write(line)
+    '''
+    # 下面的代码是为sisfall进行的转化
+    with open(csv_name, "w+") as file_w:
+        #file_w.seek(0, os.SEEK_SET)
+        file_w.write('a1x,a1y,a1z,gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z\n')
+        flag = 0
+        for line in lines:
+            flag = flag+1
+            if flag%2==0:
+                if ';' in line:
+                    line = line.replace(';', '')
+                file_w.write(line)
+
+
     print("将",txt_file,"转化成",csv_name)
     return csv_name
 
@@ -135,7 +150,8 @@ def find_txt_data_file(path):
 
     for i in os.listdir(path):
         if os.path.isfile(path+"/"+i):
-            if ("txt" in i) and (("acc" in i) or ("gyro" in i)):
+            #if ("txt" in i) and (("acc" in i) or ("gyro" in i)):
+            if ('txt' in i) and ('_' in i):
                 txt2csv(path+"/"+i)
         else:
             find_txt_data_file(path+"/"+i)
@@ -175,4 +191,6 @@ def main():
 
 
 if __name__=="__main__":
-    main()
+    # main()
+    #txt2csv('test.txt')
+    find_txt_data_file('/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset')

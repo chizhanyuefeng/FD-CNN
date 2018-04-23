@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+coord_x = []
+
 def on_button_press(event):
     '''
     鼠标点击响应事件
@@ -12,13 +14,16 @@ def on_button_press(event):
     :return:
     '''
     global coord_x
-    coord_x = event.xdata
+    coord_x.append(int(event.xdata))
 
+    length = len(coord_x)
     plt.subplot(2,1,1)
-    plt.hlines(event.ydata,coord_x,coord_x+400)
+    plt.hlines(event.ydata,coord_x[length-1],coord_x[length-1]+200)
     plt.subplot(2, 1, 2)
-    plt.hlines(event.ydata, coord_x, coord_x + 400)
+    plt.hlines(event.ydata, coord_x[length-1], coord_x[length-1] + 200)
+
     plt.draw()
+
 
 def fall_line_chart(csv_file):
     '''
@@ -48,22 +53,27 @@ def fall_line_chart(csv_file):
     plt.xticks([0,100,200,300,400,500,600,700,800])
     plt.show()
 
-def adl_line_chart(csv_file):
+def adl_line_chart(csv_file,data_num=1):
     '''
     绘制日常行为运动数据折线图
     :param csv_file: 日常行为运动数据图
-    :return: 获取最后一次的鼠标点击的x坐标值
+    :param data_num: 截取数据量
+    :return: 截取的数据和截取的数据量
     '''
+
     if os.path.exists(csv_file) == False:
         print(csv_file,'文件不存在！')
         return None
     data = pd.read_csv(csv_file)
-    num = data.timestamp.size
+    num = data.acc_x.size
+
+    global coord_x
+    coord_x.clear()
 
     # 获取标签和其最终的位置
-    label_dict = {}
-    for i in range(num):
-        label_dict[data.label[i]] = i
+    # label_dict = {}
+    # for i in range(num):
+    #     label_dict[data.label[i]] = i
 
     x = np.arange(num)
     fig = plt.figure(1,figsize=(100,60))
@@ -77,13 +87,14 @@ def adl_line_chart(csv_file):
     acc_max = max(data.acc_x.max(),data.acc_y.max(),data.acc_z.max())
     acc_min = min(data.acc_x.min(),data.acc_y.min(),data.acc_z.min())
 
-    for key in label_dict:
-        plt.vlines(label_dict[key],acc_min,acc_max)
-        plt.annotate(key,xy=(label_dict[key]-200,acc_max))
+    # for key in label_dict:
+    #     plt.vlines(label_dict[key],acc_min,acc_max)
+    #     plt.annotate(key,xy=(label_dict[key]-200,acc_max))
 
     # 添加解释图标
     plt.legend()
-    plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
+    x_flag = np.arange(0,num,num/10)
+    plt.xticks(x_flag)
 
     # 子表2绘制陀螺仪传感器数据
     plt.subplot(2,1,2)
@@ -95,30 +106,19 @@ def adl_line_chart(csv_file):
     gyro_max = max(data.gyro_x.max(),data.gyro_y.max(),data.gyro_z.max())
     gyro_min = min(data.gyro_x.min(),data.gyro_y.min(),data.gyro_z.min())
 
-    for key in label_dict:
-        plt.vlines(label_dict[key], gyro_min,gyro_max)
-        plt.annotate(key, xy=(label_dict[key]-200, gyro_max))
+    # for key in label_dict:
+    #     plt.vlines(label_dict[key], gyro_min,gyro_max)
+    #     plt.annotate(key, xy=(label_dict[key]-200, gyro_max))
     # 添加解释图标
     plt.legend()
-    plt.xticks([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
+    plt.xticks(x_flag)
 
     # 鼠标点击事件
     fig.canvas.mpl_connect('button_press_event', on_button_press)
 
     plt.show()
 
-    return int(coord_x)
-
-def adl_chart_for_extract_multi_data(csv_file,data_num):
-    '''
-    绘制数据图表，从csv文件中截取data_num份数据
-    :param csv_file:
-    :param data_num:
-    :return: 返回每段数据的起始行，共data_num个值
-    '''
-    data_x = [30,100,150,200,400,600]
-
-    return data_x
+    return coord_x,data_num
 
 
 def main():
@@ -127,8 +127,8 @@ def main():
     :return:
     """
 
-    x = adl_line_chart('/home/tony/fall_data/MobiAct_Dataset_v2.0/Annotated Data/CHU/CHU_1_3_annotated.csv')
-    print('pos:', int(x))
+    x = adl_line_chart('/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA09/D07_SA09_R01.csv',6)
+    print('pos:', x)
 
 if __name__ == '__main__':
     main()
