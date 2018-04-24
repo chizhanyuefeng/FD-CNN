@@ -1,6 +1,6 @@
 # AFD-CNN(ADL and Fall down Detecton Convolutional Neural Networks)
 
-#Requirenments
+# Requirenments
 python3
 
 tensorflow 1.4.0
@@ -12,10 +12,10 @@ numpy
 matplotlib
 
 
-#How to train and test
+# How to train and test
 python ./src/cnn.py
 
-#dataset
+# dataset
 we need two public datasets.
 
 1.MobiFall＆MobiAct DataSet
