@@ -32,11 +32,15 @@ class DataSet:
         class_num = len(class_list)
         for f in fs:
             file_path = os.path.join(data_path, f)
+            # 读取所有csv文件
             if 'csv' in f:
                 data = pd.read_csv(file_path,index_col=False)
                 all_data = all_data.append(data)
+                #print(f)
+                #print(all_data.values.shape)
 
         np.random.shuffle(all_data.values)
+
         self._num_examples = class_num * 1000
 
         for i in range(0,self._num_examples):
@@ -147,7 +151,7 @@ def main():
     # print(dataset.test_y)
     #for i in range(0,45):
     x,y=dataset.get_train_data()
-    num = np.array(y)
+    num = np.array(x)
     print(num.shape)
     #print(dataset.epochs_completed)
 

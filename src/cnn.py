@@ -136,7 +136,7 @@ def train_model():
         correct_prediction = tf.equal(tf.argmax(y_,1),tf.argmax(y,1))
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
-        tf.summary.scalar("loss", accuracy)
+        tf.summary.scalar("accuracy", accuracy)
 
     data = dataset.DataSet('../data/dataset',CLASS_LIST)
     saver = tf.train.Saver()
