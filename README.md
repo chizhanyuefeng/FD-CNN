@@ -3,7 +3,7 @@
 ## Requirenments
 - python3
 - tensorflow 1.4.0
-- pandans
+- pandas
 - numpy
 - matplotlib
 
