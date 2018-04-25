@@ -11,7 +11,7 @@
 ## How to train and test
     python ./src/cnn.py
 
-## dataset
+## Dataset
 we need two public datasets.
 
 - 1.MobiFall＆MobiAct DataSet
