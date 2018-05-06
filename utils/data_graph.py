@@ -127,7 +127,7 @@ def main():
     :return:
     """
 
-    x = adl_line_chart('/home/tony/fall_research/fall_data/MobiAct_Dataset_v2.0/Annotated Data/JOG/JOG_9_1_annotated.csv',6)
+    x = adl_line_chart('/home/tony/fall_research/fall_data/SisFall_dataset/SisFall_dataset/SA01/D09_SA01_R03.csv',6)
     print('pos:', x)
 
 if __name__ == '__main__':

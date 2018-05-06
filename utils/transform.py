@@ -7,12 +7,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/WAL/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/WAL/image/'
-SOURCE_DATA_PATH = '../data/raw_data/FALL/fall_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/CHU/figure/'
+SAVEIMG_PATH = '../data/raw_data/ADL/CHU/image/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/CHU/CHU_data.csv'
 
 #DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
-DATASET_ADL_PATH = '../data/dataset/fall_data.csv'
+DATASET_ADL_PATH = '../data/dataset/chu_data.csv'
 
 value_max = 0
 value_min = 0
@@ -24,7 +24,7 @@ def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE 
     :return:
     '''
     # 初始大小为3*400的矩阵。3为RGB通道
-    transform_data = np.zeros(shape=[3,400],dtype=np.int)
+    transform_data = np.zeros(shape=[3,400],dtype=np.float)
     re = np.zeros(shape=[3,400],dtype=np.float)
 
     for i in range(400):
@@ -32,9 +32,9 @@ def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE 
         if i>=200:
             # 陀螺仪数据
             scale = 250/(value_max-value_min)
-            transform_data[0][i] = int((sensor_data[3 * i] - value_min) * scale)  # R通道，传感器x值
-            transform_data[1][i] = int((sensor_data[3 * i + 1] - value_min) * scale)  # G通道，传感器y值
-            transform_data[2][i] = int((sensor_data[3 * i + 2] - value_min) * scale)  # B通道，传感器z值
+            transform_data[0][i] = (sensor_data[3 * i] - data_move) * data_scale  # R通道，传感器x值
+            transform_data[1][i] = (sensor_data[3 * i + 1] - data_move) * data_scale  # G通道，传感器y值
+            transform_data[2][i] = (sensor_data[3 * i + 2] - data_move) * data_scale  # B通道，传感器z值
         else:
             # 加速度数据
             transform_data[0][i] = (sensor_data[3*i] + data_move) * data_scale # R通道，传感器x值
@@ -97,11 +97,10 @@ def make_figure():
     将未处理数据进行可视化，生成figure和对应的image
     :return:
     '''
-    fall_data = pd.read_csv(SOURCE_DATA_PATH)
+    fall_data = pd.read_csv(SOURCE_DATA_PATH,index_col=False)
 
     num = fall_data.label.size
-
-    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
+    pbar = pb.ProgressBar(maxval=num, widgets=['生成图像，处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
 
     for i in range(num):
         pbar.update(i + 1)
@@ -111,7 +110,7 @@ def make_figure():
         value_max = max(fall_data.iloc[i:i+1, 601:1201].values.reshape([600,]))
         value_min = min(fall_data.iloc[i:i+1, 601:1201].values.reshape([600,]))
         if not np.isnan(sensor_data).any():
-            transform_data = transform_sensor_data(sensor_data,i,MAKE_FIGURE=True)
+            transform_data = transform_sensor_data(sensor_data,i,0,1,MAKE_FIGURE=True)
             data2image(transform_data, i)
     pbar.finish()
 
@@ -125,7 +124,7 @@ def make_dataset():
 
     num = data.label.size
 
-    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
+    pbar = pb.ProgressBar(maxval=num, widgets=['生成数据集，处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
 
     for i in range(num):
         pbar.update(i + 1)
@@ -134,7 +133,7 @@ def make_dataset():
         global value_min
         value_max = max(data.iloc[i:i + 1, 601:1201].values.reshape([600, ]))
         value_min = min(data.iloc[i:i + 1, 601:1201].values.reshape([600, ]))
-        transform_data = transform_sensor_data(sensor_data,i,MAKE_FIGURE=True).reshape([1200,])
+        transform_data = transform_sensor_data(sensor_data,i,0,1,MAKE_FIGURE=False).reshape([1200,])
         for j in range(1200):
             data.iat[i,j+1] = transform_data[j]
 
@@ -143,7 +142,8 @@ def make_dataset():
 
 if __name__=='__main__':
 
-    #make_figure()
+    make_figure()
 
     make_dataset()
     pass
+

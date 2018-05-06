@@ -149,7 +149,7 @@ def train_model():
         for step in range(TRAIN_STEP):
             batch_x, batch_y = data.next_batch(BATCH_SIZE)
             if step%100==0:
-                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
+                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1})
                 print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
                 summ = sess.run(merged, feed_dict={x: batch_x, y: batch_y,keep_prob: 1.0})
                 train_writer.add_summary(summ, global_step=step)
