@@ -4,7 +4,7 @@
 CNN模型
 '''
 
-import pandas as pd
+import numpy as np
 import tensorflow as tf
 import dataset
 
@@ -149,7 +149,7 @@ def train_model():
         for step in range(TRAIN_STEP):
             batch_x, batch_y = data.next_batch(BATCH_SIZE)
             if step%100==0:
-                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1})
+                train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
                 print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
                 summ = sess.run(merged, feed_dict={x: batch_x, y: batch_y,keep_prob: 1.0})
                 train_writer.add_summary(summ, global_step=step)
@@ -159,16 +159,14 @@ def train_model():
         train_writer.close()
         save_path = saver.save(sess, MODEL_SEVE_PATH)
         print("训练完毕,权重保存至:%s"%(save_path))
-        #
-        # 
-        # test_x, test_y = data.get_test_data()
-        # print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
 
 def test_model():
     '''
     使用测试数据集对训练好的模型进行测试
     :return: 测试结果
     '''
+    data = dataset.DataSet('../data/dataset', CLASS_LIST)
+    test_x, test_y = data.get_test_data()
 
     tf.reset_default_graph()
     with tf.name_scope('input'):
@@ -181,29 +179,55 @@ def test_model():
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
-    data = dataset.DataSet('../data/dataset',CLASS_LIST)
     saver = tf.train.Saver()
     with tf.Session() as sess:
         saver.restore(sess, "../model/model.ckpt")
-        test_x, test_y = data.get_test_data()
+        p_y = np.argmax(sess.run(y_,feed_dict={x: test_x,keep_prob: 1.0}),1)
         print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
+
+    g_truth = np.argmax(test_y,1)
+    sensitivity,specificity = evaluate(p_y,g_truth)
+
+    print(sensitivity,specificity)
+
+def evaluate(p,g):
+    fall_index = []
+    data_size = g.size
+    for i in range(data_size):
+        if g[i] ==0:
+            fall_index.append(i)
+    fall_num = len(fall_index)
+
+    TP = 0
+    FN = 0
+    for i in range(fall_num):
+        index = fall_index[i]
+        if p[index] == g[index]:
+            TP+=1
+        else:
+            FN+=1
+    sensitivity = TP/(TP+FN)
+
+
+    FP =0
+    TN =0
+    for i in range(data_size):
+        if g[i]!=0:
+            if p[i] == 0:
+                FP+=1
+            else:
+                TN+=1
+
+    specificity = TN/(FP+TN)
+    return sensitivity,specificity
+
 
 
 def demo_run(data):
     if data.shape!=[1,1200]:
         print('数据格式不合法:',data.shape)
         return None
-    #
-    # tf.reset_default_graph()
-    # with tf.name_scope('input'):
-    #     x = tf.placeholder(tf.float32, [None, 1200])
-    #     #y = tf.placeholder(tf.float32, [None, 2])
-    # y_, keep_prob = fall_net(x)
-    # saver = tf.train.Saver()
-    # with tf.Session() as sess:
-    #     saver.restore(sess, "../model/model.ckpt")
-    #     result = sess.run(y_,feed_dict={x: data, keep_prob: 1.0})
-    #     print('预测结果为:',result)
+
 
 
 if __name__=='__main__':
