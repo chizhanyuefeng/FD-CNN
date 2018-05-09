@@ -21,5 +21,5 @@ _book
 *.pyc
 *.png
 #model
-log
+#log
 dataset_backup
