@@ -20,6 +20,6 @@ _book
 .idea
 *.pyc
 *.png
-#model
-#log
+model
+log
 dataset_backup
