@@ -3,7 +3,7 @@
 '''
 CNN模型
 '''
-
+import time
 import numpy as np
 import tensorflow as tf
 import dataset
@@ -179,22 +179,37 @@ def test_model():
         correct_prediction = tf.cast(correct_prediction,tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
+    start_time = time.time()
+
     saver = tf.train.Saver()
     with tf.Session() as sess:
         saver.restore(sess, "../model/model.ckpt")
         p_y = np.argmax(sess.run(y_,feed_dict={x: test_x,keep_prob: 1.0}),1)
         print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
 
+    test_time = str(time.time() - start_time)
+    print('测试时间为：',test_time)
+
     g_truth = np.argmax(test_y,1)
-    sensitivity,specificity = evaluate(p_y,g_truth)
+    avg_sensitivity = 0
+    avg_specificity = 0
 
-    print(sensitivity,specificity)
+    for i in range(CLASS_NUM):
+        sensitivity,specificity = evaluate(p_y,g_truth,i)
+        print('class:',CLASS_LIST[i],',sensitivity = ',sensitivity,',specificity =',specificity)
+        avg_sensitivity += sensitivity
+        avg_specificity += specificity
 
-def evaluate(p,g):
+    avg_sensitivity = avg_sensitivity/CLASS_NUM
+    avg_specificity = avg_specificity/CLASS_NUM
+
+    print(avg_sensitivity,avg_specificity)
+
+def evaluate(p,g,class_):
     fall_index = []
     data_size = g.size
     for i in range(data_size):
-        if g[i] ==0:
+        if g[i] ==class_:
             fall_index.append(i)
     fall_num = len(fall_index)
 
@@ -212,8 +227,8 @@ def evaluate(p,g):
     FP =0
     TN =0
     for i in range(data_size):
-        if g[i]!=0:
-            if p[i] == 0:
+        if g[i]!=class_:
+            if p[i] == class_:
                 FP+=1
             else:
                 TN+=1
