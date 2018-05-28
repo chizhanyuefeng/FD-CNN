@@ -7,15 +7,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/JOG/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/JOG/image/'
-SOURCE_DATA_PATH = '../data/raw_data/ADL/JOG/JOG_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/JUM/figure/'
+SAVEIMG_PATH = '../data/raw_data/ADL/JUM/image/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/JUM/JUM_data.csv'
 
 #DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
 DATASET_ADL_PATH = '../data/dataset/fall_data.csv'
 
 value_max = 0
 value_min = 0
+
+label_size = 20
+tick_size = 15
+legend_size = 12
+figure_size = (12,10.5)
+dpi_size = 100
+line_width = 1
 
 def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE = False):
     '''
@@ -47,26 +54,71 @@ def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE 
             re[2][i] = (sensor_data[3 * i + 2])   # B通道，传感器z值
 
     if MAKE_FIGURE:
-        x = np.arange(400)
-        plt.figure(1)
+        x = np.arange(200)
 
-        plt.subplot(211)
-        plt.title('processed data')
-        plt.plot(x, transform_data[0], label='x', color='red')
-        plt.plot(x, transform_data[1], label='y', color='green')
-        plt.plot(x, transform_data[2], label='z', color='blue')
-        plt.legend()
+        plt.figure(1)#,figsize=figure_size)
+        plt.subplot(221)
+        # 'processed acceleration data'
+        plt.xticks([50, 100, 150, 200], fontsize=tick_size)
+        plt.yticks([50, 150, 250], fontsize=tick_size)
+        plt.xlabel('time(x0.01s)',fontsize=label_size)
+        plt.ylabel('color value',fontsize=label_size)
+        plt.ylim(0, 255)
+        plt.xlim(0, 201)
+        plt.plot(x, transform_data[0][0:200], label='x', color='red',linewidth=line_width)
+        plt.plot(x, transform_data[1][0:200], label='y', color='green',linewidth=line_width)
+        plt.plot(x, transform_data[2][0:200], label='z', color='blue',linewidth=line_width)
+        plt.legend(fontsize=legend_size)
+        # plt.savefig(SAVEFIG_PATH + str(num) + '_1.png')
+        # plt.close()
 
-        plt.subplot(212)
-        plt.title('raw data')
-        plt.plot(x, re[0], label='x', color='red')
-        plt.plot(x, re[1], label='y', color='green')
-        plt.plot(x, re[2], label='z', color='blue')
-        plt.legend()
+        #plt.figure(2,figsize=figure_size)
+        plt.subplot(222)
+        # 'processed gyroscope data'
+        plt.xticks([50, 100, 150, 200], fontsize=tick_size)
+        plt.yticks([50, 150, 250], fontsize=tick_size)
+        plt.ylim(0, 255)
+        plt.xlim(0, 201)
+        plt.xlabel('time(x0.01s)',fontsize=label_size)
+        plt.ylabel('color value',fontsize=label_size)
+        plt.plot(x, transform_data[0][200:400], label='x', color='red',linewidth=line_width)
+        plt.plot(x, transform_data[1][200:400], label='y', color='green',linewidth=line_width)
+        plt.plot(x, transform_data[2][200:400], label='z', color='blue',linewidth=line_width)
+        plt.legend(fontsize=legend_size)
+        # plt.savefig(SAVEFIG_PATH + str(num) + '_2.png')
+        # plt.close()
 
-        #plt.show()
-        plt.savefig(SAVEFIG_PATH + str(num) + '.png')
+        #plt.figure(3,figsize=figure_size)
+        plt.subplot(223)
+        # 'raw acceleration data'
+        plt.xticks([50, 100, 150, 200],fontsize=tick_size)
+        plt.yticks(fontsize=tick_size)
+        plt.xlim(0, 201)
+        plt.xlabel('time(x0.01s)',fontsize=label_size)
+        plt.ylabel('acceleration(g)',fontsize=label_size)
+        plt.plot(x, re[0][0:200], label='x', color='red',linewidth=line_width)
+        plt.plot(x, re[1][0:200], label='y', color='green',linewidth=line_width)
+        plt.plot(x, re[2][0:200], label='z', color='blue',linewidth=line_width)
+        plt.legend(fontsize=legend_size)
+        # plt.savefig(SAVEFIG_PATH + str(num) + '_3.png')
+        # plt.close()
 
+        #plt.figure(4,figsize=figure_size)
+        plt.subplot(224)
+        # 'raw gyroscope data'
+        plt.xticks([50, 100, 150, 200], fontsize=tick_size)
+        plt.yticks(fontsize=tick_size)
+        plt.xlim(0, 201)
+        plt.xlabel('time(x0.01s)',fontsize=label_size)
+        plt.ylabel('gyroscope(°/s)',fontsize=label_size)
+        plt.plot(x, re[0][200:400], label='x', color='red',linewidth=line_width)
+        plt.plot(x, re[1][200:400], label='y', color='green',linewidth=line_width)
+        plt.plot(x, re[2][200:400], label='z', color='blue',linewidth=line_width)
+        plt.legend(fontsize=legend_size)
+
+        plt.tight_layout(2, 2, 2)
+
+        plt.savefig(SAVEFIG_PATH + str(num) + '_.png')
         plt.close()
 
     transform_data = transform_data.reshape([3,20,20])

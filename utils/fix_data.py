@@ -9,6 +9,7 @@
 import os
 import pandas as pd
 import numpy as np
+import progressbar as pb
 
 # 数据错误类型
 X_Y_INVERSION = 0 # 将x,y轴数据对调
@@ -22,7 +23,7 @@ Y_Z_INVERSION = 7 # 将y,z轴数据对调
 X_Z_INVERSION = 8 # 将x,z轴数据对调
 
 # 修改数据所用宏
-DATA_PATH = '../data/raw_data/ADL/STN/STN_data.csv'
+DATA_PATH = '../data/raw_data/ADL/JOG/JOG_data.csv'
 ERROR_DATA_PATH = '../data/raw_data/ADL/STN/error_data.csv'
 WRONG_DATA_PATH = '../data/raw_data/ADL/STN/wrong_data.csv'
 
@@ -32,87 +33,87 @@ MERGE_DATA_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\m
 HAVE_MERGED_INDEX_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\MERGE\indexfile.csv'
 
 
-def fix_data(data_file,row,fix_type):
+def fix_data(wrongdata,row,fix_type):
     '''
     根据提供的数据和错误类型来修正数据,修改好数据后,将数据更新并保存.
-    :param daya_file: 数据文件路径
+    :param daya: 数据
     :param row: 数据所在文件中的行号(行号从0开始)
     :param fix_type: 错误类型
     :return: 返回修整好的数据a
     '''
-    try:
-        wrongdata = pd.read_csv(data_file)
-    except IOError:
-        print(data_file,"文件无法打开或不存在！")
-        return data_file
-    if row > len(wrongdata.label):
-        print('行数为：',len(wrongdata.label),'.当前修改行数为:',row,',错误行数超出范围！')
-        return 'error'
+    # try:
+    #     wrongdata = pd.read_csv(data_file)
+    # except IOError:
+    #     print(data_file,"文件无法打开或不存在！")
+    #     return data_file
+    # if row > len(wrongdata.label):
+    #     print('行数为：',len(wrongdata.label),'.当前修改行数为:',row,',错误行数超出范围！')
+    #     return 'error'
 
     if fix_type == X_Y_INVERSION:
         for i in range(1,len(wrongdata.columns)-1,3):
             temp = wrongdata.iloc[row, i]
             wrongdata.iat[row, i] = wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 1] = temp
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
-    if fix_type == Y_Z_INVERSION:
+    elif fix_type == Y_Z_INVERSION:
         for i in range(1,len(wrongdata.columns)-1,3):
             temp = wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 1] = wrongdata.iloc[row, i + 2]
             wrongdata.iat[row, i + 2] = temp
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
-    if fix_type == X_Z_INVERSION:
+    elif fix_type == X_Z_INVERSION:
         for i in range(1,len(wrongdata.columns)-1,3):
             temp = wrongdata.iloc[row, i]
             wrongdata.iat[row, i] = wrongdata.iloc[row, i + 2]
             wrongdata.iat[row, i + 2] = temp
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == X_Y_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == X_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == Y_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == Y_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == X_Y_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     elif fix_type == X_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
-        wrongdata.to_csv(data_file,index=False)
-        print('修改成功！')
+        #wrongdata.to_csv(data_file,index=False)
+        #print('修改成功！')
 
     else:
         # print('错误类型发生错误！')
@@ -139,10 +140,11 @@ def fix_data(data_file,row,fix_type):
         #         print("错误数据已保存至文件", WRONG_DATA_PATH)
         for i in range(0,len(wrongdata.iloc[row])):
             wrongdata.iat[row,i] = None
-        wrongdata.to_csv(data_file, index=False)
-        print("第" + str(row) + "行置空")
+        #wrongdata.to_csv(data_file, index=False)
+        #print("第" + str(row) + "行置空")
             # else:
             #     print("第" + str(row) + "行错误数据已存在在" + WRONG_DATA_PATH + "文件中！")
+    return wrongdata
 
 def deleteEmpty(data_file):
 
@@ -213,12 +215,23 @@ def mergedata(root_dir,save_data_file):
 
 def main():
 
+
     # 修正数据
-    error_data = pd.read_csv(ERROR_DATA_PATH)
-    for i in range(len(error_data.row)):
-        Row = error_data.iloc[i, 0]
-        Type = error_data.iloc[i, 1]
-        fix_data(DATA_PATH,Row,Type)
+    data = pd.read_csv(DATA_PATH)
+    num = len(data.label)
+    pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
+    for i in range(num):
+        pbar.update(i+1)
+        data = fix_data(data, i, X_Y_INVERSION)
+    data.to_csv(DATA_PATH, index=False)
+    pbar.finish()
+
+    # 修正数据
+    # error_data = pd.read_csv(ERROR_DATA_PATH)
+    # for i in range(len(error_data.row)):
+    #     Row = error_data.iloc[i, 0]
+    #     Type = error_data.iloc[i, 1]
+    #     fix_data(DATA_PATH,Row,Type)
 
     #
     # error_data = pd.read_csv(ERROR_DATA_PATH)
