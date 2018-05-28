@@ -7,9 +7,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/JOG/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/JOG/image/'
-SOURCE_DATA_PATH = '../data/raw_data/ADL/JOG/JOG_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/STU/figure/'
+SAVEIMG_PATH = '../data/raw_data/ADL/STU/image/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/STU/STU_data.csv'
 
 #DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
 DATASET_ADL_PATH = '../data/dataset/fall_data.csv'
