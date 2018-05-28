@@ -18,6 +18,8 @@ Y_NEGATION = 3 # 将y轴数据进行取反
 Y_Z_NEGATION = 4 # 将y,z进行取反
 X_Y_Z_NEGATION = 5 # 将x,y,z进行取反
 X_Z_NEGATION = 6 # 将x,z进行取反
+Y_Z_INVERSION = 7 # 将y,z轴数据对调
+X_Z_INVERSION = 8 # 将x,z轴数据对调
 
 # 修改数据所用宏
 DATA_PATH = '../data/raw_data/ADL/STN/STN_data.csv'
@@ -47,7 +49,7 @@ def fix_data(data_file,row,fix_type):
         print('行数为：',len(wrongdata.label),'.当前修改行数为:',row,',错误行数超出范围！')
         return 'error'
 
-    if fix_type == 0:
+    if fix_type == X_Y_INVERSION:
         for i in range(1,len(wrongdata.columns)-1,3):
             temp = wrongdata.iloc[row, i]
             wrongdata.iat[row, i] = wrongdata.iloc[row, i + 1]
@@ -55,33 +57,49 @@ def fix_data(data_file,row,fix_type):
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 1:
+    if fix_type == Y_Z_INVERSION:
+        for i in range(1,len(wrongdata.columns)-1,3):
+            temp = wrongdata.iloc[row, i + 1]
+            wrongdata.iat[row, i + 1] = wrongdata.iloc[row, i + 2]
+            wrongdata.iat[row, i + 2] = temp
+        wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
+
+    if fix_type == X_Z_INVERSION:
+        for i in range(1,len(wrongdata.columns)-1,3):
+            temp = wrongdata.iloc[row, i]
+            wrongdata.iat[row, i] = wrongdata.iloc[row, i + 2]
+            wrongdata.iat[row, i + 2] = temp
+        wrongdata.to_csv(data_file,index=False)
+        print('修改成功！')
+
+    elif fix_type == X_Y_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 2:
+    elif fix_type == X_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 3:
+    elif fix_type == Y_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 4:
+    elif fix_type == Y_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 5:
+    elif fix_type == X_Y_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 1] = 0 - wrongdata.iloc[row, i + 1]
@@ -89,7 +107,7 @@ def fix_data(data_file,row,fix_type):
         wrongdata.to_csv(data_file,index=False)
         print('修改成功！')
 
-    elif fix_type == 6:
+    elif fix_type == X_Z_NEGATION:
         for i in range(1,len(wrongdata.columns)-1,3):
             wrongdata.iat[row, i] = 0 - wrongdata.iloc[row, i]
             wrongdata.iat[row, i + 2] = 0 - wrongdata.iloc[row, i + 2]
@@ -196,11 +214,11 @@ def mergedata(root_dir,save_data_file):
 def main():
 
     # 修正数据
-    # error_data = pd.read_csv(ERROR_DATA_PATH)
-    # for i in range(len(error_data.row)):
-    #     Row = error_data.iloc[i, 0]
-    #     Type = error_data.iloc[i, 1]
-    #     fix_data(DATA_PATH,Row,Type)
+    error_data = pd.read_csv(ERROR_DATA_PATH)
+    for i in range(len(error_data.row)):
+        Row = error_data.iloc[i, 0]
+        Type = error_data.iloc[i, 1]
+        fix_data(DATA_PATH,Row,Type)
 
     #
     # error_data = pd.read_csv(ERROR_DATA_PATH)
@@ -215,7 +233,7 @@ def main():
 
 
     # 剔除空行
-    deleteEmpty(DATA_PATH)
+    # deleteEmpty(DATA_PATH)
 
     # 合并数据
     # mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
