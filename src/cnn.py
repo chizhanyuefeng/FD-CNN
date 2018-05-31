@@ -13,7 +13,7 @@ Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9
          'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 # 超参数
-CLASS_LIST = [0,2,3,4,6,7,9]
+CLASS_LIST = [0,2,3,4,5,6,7,9]
 CLASS_NUM = len(CLASS_LIST)
 LEARNING_RATE = 0.001
 TRAIN_STEP = 10000

@@ -14,6 +14,8 @@ import pandas as pd
 import numpy as np
 
 DATA_PATH = '../data/dataset'
+TRAIN_DATA = '../data/train.csv'
+TEST_DATA = '../data/test.csv'
 
 class DataSet:
     # 定义私有属性
@@ -36,10 +38,14 @@ class DataSet:
             if 'csv' in f:
                 data = pd.read_csv(file_path,index_col=False)
                 all_data = all_data.append(data)
-                #print(f)
-                #print(all_data.values.shape)
 
         np.random.shuffle(all_data.values)
+
+        train_data = all_data[0:1000*class_num]
+        train_data.to_csv(TRAIN_DATA,index=False)
+
+        test_data = all_data[1000*class_num:]
+        test_data.to_csv(TEST_DATA,index=False)
 
         self._num_examples = class_num * 1000
 
