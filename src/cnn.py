@@ -9,8 +9,11 @@ import tensorflow as tf
 import dataset
 
 MODEL_SEVE_PATH = '../model/model.ckpt'
-Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,
-         'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
+# Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,
+#          'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
+
+Label = {0:'Fall',1:'Stand',2:'Walk',3:'Jog',4:'Jump',5:'up_stair',6:'down_stair',
+         7:'stand2sit',8:'sitting',9:'sit2stand',10:'CSI',11:'CSO',12:'LYI'}
 
 # 超参数
 CLASS_LIST = [0,2,3,4,5,6,7,9]
@@ -187,7 +190,7 @@ def test_model():
     with tf.Session() as sess:
         saver.restore(sess, "../model/model.ckpt")
         p_y = np.argmax(sess.run(y_,feed_dict={x: test_x,keep_prob: 1.0}),1)
-        print("准确率为 %g" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
+        print("准确率为 %f" % accuracy.eval(feed_dict={x: test_x, y: test_y, keep_prob: 1.0}))
 
     test_time = str(time.time() - start_time)
     print('测试时间为：',test_time)
@@ -198,14 +201,14 @@ def test_model():
 
     for i in range(CLASS_NUM):
         sensitivity,specificity = evaluate(p_y,g_truth,i)
-        print('class:',CLASS_LIST[i],',sensitivity = ',sensitivity,',specificity =',specificity)
+        print('class:%s,sensitivity =%05f,specificity =%05f'%(Label[CLASS_LIST[i]],sensitivity,specificity))
         avg_sensitivity += sensitivity
         avg_specificity += specificity
 
     avg_sensitivity = avg_sensitivity/CLASS_NUM
     avg_specificity = avg_specificity/CLASS_NUM
 
-    print(avg_sensitivity,avg_specificity)
+    print('avg_sensitivity=%05f,avg_specificity=%05f'%(avg_sensitivity,avg_specificity))
 
 def evaluate(p,g,class_):
     fall_index = []
