@@ -155,7 +155,7 @@ def train_model():
             batch_x, batch_y = data.next_batch(BATCH_SIZE)
             if step%100==0:
                 train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
-                print('训练第 %d次, 准确率为 %g' % (step, train_accuracy))
+                print('训练第 %d次, 准确率为 %f' % (step, train_accuracy))
                 summ = sess.run(merged, feed_dict={x: batch_x, y: batch_y,keep_prob: 1.0})
                 train_writer.add_summary(summ, global_step=step)
 
@@ -201,7 +201,7 @@ def test_model():
 
     for i in range(CLASS_NUM):
         sensitivity,specificity = evaluate(p_y,g_truth,i)
-        print('class:%s,sensitivity =%05f,specificity =%05f'%(Label[CLASS_LIST[i]],sensitivity,specificity))
+        print('class:%10s,sensitivity =%05f,specificity =%05f'%(Label[CLASS_LIST[i]],sensitivity,specificity))
         avg_sensitivity += sensitivity
         avg_specificity += specificity
 
@@ -255,10 +255,6 @@ if __name__=='__main__':
 
     train_model()
     test_model()
-    #
-    # data = pd.read_csv('../data/dataset/fall_data.csv')
-    # data.
-    #
-    # print(data)
+
 
     #demo_run()
