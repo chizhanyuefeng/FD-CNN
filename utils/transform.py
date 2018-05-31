@@ -12,7 +12,7 @@ SAVEIMG_PATH = '../data/raw_data/ADL/STU/image/'
 SOURCE_DATA_PATH = '../data/raw_data/ADL/STU/STU_data.csv'
 
 #DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
-DATASET_ADL_PATH = '../data/dataset/fall_data.csv'
+DATASET_ADL_PATH = '../data/dataset/5_upstair_data.csv'
 
 value_max = 0
 value_min = 0
@@ -97,19 +97,19 @@ def make_figure():
     将未处理数据进行可视化，生成figure和对应的image
     :return:
     '''
-    fall_data = pd.read_csv(SOURCE_DATA_PATH,index_col=False)
+    data = pd.read_csv(SOURCE_DATA_PATH,index_col=False)
 
-    num = fall_data.label.size
+    num = data.label.size
 
     pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
 
     for i in range(num):
         pbar.update(i + 1)
-        sensor_data = fall_data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
+        sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
         global value_max
         global value_min
-        value_max = max(fall_data.iloc[i:i+1, 601:1201].values.reshape([600,]))
-        value_min = min(fall_data.iloc[i:i+1, 601:1201].values.reshape([600,]))
+        value_max = max(data.iloc[i:i+1, 601:1201].values.reshape([600,]))
+        value_min = min(data.iloc[i:i+1, 601:1201].values.reshape([600,]))
         if not np.isnan(sensor_data).any():
             transform_data = transform_sensor_data(sensor_data,i,MAKE_FIGURE=True)
             data2image(transform_data, i)
@@ -143,7 +143,8 @@ def make_dataset():
 
 if __name__=='__main__':
 
-    make_figure()
+    #make_figure()
 
-    #make_dataset()
+    make_dataset()
+
     pass

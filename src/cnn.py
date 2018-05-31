@@ -9,6 +9,8 @@ import tensorflow as tf
 import dataset
 
 MODEL_SEVE_PATH = '../model/model.ckpt'
+Label = {'STD':1,'WAL':2,'JOG':3,'JUM':4,'STU':5,'STN':6,'SCH':7,'SIT':8,'CHU':9,
+         'CSI':10,'CSO':11,'LYI':12,'FOL':0,'FKL':0,'BSC':0,'SDL':0}
 
 # 超参数
 CLASS_LIST = [0,2,3,4,6,7,9]
@@ -239,6 +241,7 @@ def evaluate(p,g,class_):
 
 
 def demo_run(data):
+    #TODO：
     if data.shape!=[1,1200]:
         print('数据格式不合法:',data.shape)
         return None

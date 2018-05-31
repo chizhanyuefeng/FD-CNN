@@ -23,9 +23,9 @@ Y_Z_INVERSION = 7 # 将y,z轴数据对调
 X_Z_INVERSION = 8 # 将x,z轴数据对调
 
 # 修改数据所用宏
-DATA_PATH = '../data/raw_data/ADL/STU/STU_data.csv'
-ERROR_DATA_PATH = '../data/raw_data/ADL/STU/error_data.csv'
-WRONG_DATA_PATH = '../data/raw_data/ADL/STU/wrong_data.csv'
+DATA_PATH = '../data/raw_data/ADL/WAL/WAL_data.csv'
+ERROR_DATA_PATH = '../data/raw_data/ADL/WAL/error_data.csv'
+WRONG_DATA_PATH = '../data/raw_data/ADL/WAL/wrong_data.csv'
 
 # 合并数据所用宏
 ROOT_FILE_PATH = 'E:\Master\FallDetection\\fall_down_detection.git\data\FALL'
@@ -222,7 +222,7 @@ def main():
     pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
     for i in range(num):
         pbar.update(i+1)
-        data = fix_data(data, i, Y_Z_INVERSION)
+        data = fix_data(data, i, X_Y_INVERSION)
     data.to_csv(DATA_PATH, index=False)
     pbar.finish()
 
