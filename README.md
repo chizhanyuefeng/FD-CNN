@@ -1,18 +1,19 @@
 # AFD-CNN(ADL and Fall down Detecton Convolutional Neural Networks)
 
 ## Net performance
-- accuracy = 0.993017
+- accuracy = 0.978718
 
 | Class        | Sensitivity    |Specificity  |
 | ----- | -----:   | :----: |
-| Fall        | 1.0      |   1.0    |
-| Walk        | 0.9914529914529915      |   0.998330550918197    |
-| Jog        | 0.990990990990991      |   1.0    |
-| Jump        | 1.0      |   0.99836867862969    |
-| Up&down stair | 0.9827586206896551      |   0.9966666666666667    |
-| stand to sit|  0.9887640449438202      |   1.0    |
-| sit to stand | 1.0      |   0.9984    |
-| Average        | 0.9934238068682083      |   0.998823699459222    |
+| Fall        | 1.000000      |   0.998654    |
+| Walk        | 0.969072      |   1.000000    |
+| Jog        | 0.983051      |   0.993243    |
+| Jump        | 0.948980      |   0.998684    |
+| up stair | 0.989474      |   0.997379    |
+| down stair|0.967213|0.991848|
+| stand to sit|  0.981481      |   0.998667    |
+| sit to stand | 0.990476      |   0.997344    |
+| Average        | 0.978718      |   0.996977    |
 
 ## Requirenments
 - python3
