@@ -7,15 +7,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/CHU/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/CHU/image/'
-SOURCE_DATA_PATH = '../data/raw_data/ADL/CHU/CHU_data.csv'
+SAVEFIG_PATH = '../data/raw_data/ADL/WAL/figure1/'
+SAVEIMG_PATH = '../data/raw_data/ADL/WAL/image1/'
+SOURCE_DATA_PATH = '../data/raw_data/ADL/WAL/WALK_data.csv'
 
-#DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
-DATASET_ADL_PATH = '../data/dataset/5_upstair_data.csv'
+# DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
+DATASET_ADL_PATH = '../data/dataset/2_walk_data.csv'
 
-value_max = 0
-value_min = 0
+gyro_value_max = 0
+gyro_value_min = 0
+acc_max = 0
+acc_min = 0
 
 def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE = False):
     '''
@@ -31,15 +33,16 @@ def transform_sensor_data(sensor_data,num,data_move=20,data_scale=6,MAKE_FIGURE 
         # 传感器数据大小敢为-20~20，需要将其值拓展为0~255的数值
         if i>=200:
             # 陀螺仪数据
-            scale = 250/(value_max-value_min)
-            transform_data[0][i] = int((sensor_data[3 * i] - value_min) * scale)  # R通道，传感器x值
-            transform_data[1][i] = int((sensor_data[3 * i + 1] - value_min) * scale)  # G通道，传感器y值
-            transform_data[2][i] = int((sensor_data[3 * i + 2] - value_min) * scale)  # B通道，传感器z值
+            scale = 255/(gyro_value_max-gyro_value_min)
+            transform_data[0][i] = int((sensor_data[3 * i] - gyro_value_min) * scale)  # R通道，传感器x值
+            transform_data[1][i] = int((sensor_data[3 * i + 1] - gyro_value_min) * scale)  # G通道，传感器y值
+            transform_data[2][i] = int((sensor_data[3 * i + 2] - gyro_value_min) * scale)  # B通道，传感器z值
         else:
             # 加速度数据
-            transform_data[0][i] = (sensor_data[3*i] + data_move) * data_scale # R通道，传感器x值
-            transform_data[1][i] = (sensor_data[3*i+ 1] + data_move) * data_scale # G通道，传感器y值
-            transform_data[2][i] = (sensor_data[3*i+ 2] + data_move) * data_scale # B通道，传感器z值
+            scale = 255 / (acc_max - acc_min)
+            transform_data[0][i] = int((sensor_data[3 * i] - acc_min) * scale)  # R通道，传感器x值
+            transform_data[1][i] = int((sensor_data[3 * i + 1] - acc_min) * scale)  # G通道，传感器y值
+            transform_data[2][i] = int((sensor_data[3 * i + 2] - acc_min) * scale)  # B通道，传感器z值
 
         if MAKE_FIGURE:
             re[0][i] = (sensor_data[3 * i] )  # R通道，传感器x值
@@ -103,13 +106,20 @@ def make_figure():
 
     pbar = pb.ProgressBar(maxval=num, widgets=['处理进度',pb.Bar('=', '[', ']'), '',pb.Percentage()])
 
+    global gyro_value_max
+    global gyro_value_min
+    global acc_max
+    global acc_min
+
+    acc_max = max(data.iloc[:, 1:601].values.reshape([-1, ]))
+    acc_min = min(data.iloc[:, 1:601].values.reshape([-1, ]))
+    gyro_value_max = max(data.iloc[:, 601:1201].values.reshape([-1, ]))
+    gyro_value_min = min(data.iloc[:, 601:1201].values.reshape([-1, ]))
+
     for i in range(num):
         pbar.update(i + 1)
         sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, 1])
-        global value_max
-        global value_min
-        value_max = max(data.iloc[i:i+1, 601:1201].values.reshape([600,]))
-        value_min = min(data.iloc[i:i+1, 601:1201].values.reshape([600,]))
+
         if not np.isnan(sensor_data).any():
             transform_data = transform_sensor_data(sensor_data,i,MAKE_FIGURE=True)
             data2image(transform_data, i)
@@ -127,13 +137,20 @@ def make_dataset():
 
     pbar = pb.ProgressBar(maxval=num, widgets=['处理进度', pb.Bar('=', '[', ']'), '', pb.Percentage()])
 
+    global gyro_value_max
+    global gyro_value_min
+    global acc_max
+    global acc_min
+
+    acc_max = max(data.iloc[:, 1:601].values.reshape([-1, ]))
+    acc_min = min(data.iloc[:, 1:601].values.reshape([-1, ]))
+    gyro_value_max = max(data.iloc[:, 601:1201].values.reshape([-1, ]))
+    gyro_value_min = min(data.iloc[:, 601:1201].values.reshape([-1, ]))
+
     for i in range(num):
         pbar.update(i + 1)
         sensor_data = data.iloc[i:i+1, 1:1201].values.reshape([1200, ])
-        global value_max
-        global value_min
-        value_max = max(data.iloc[i:i + 1, 601:1201].values.reshape([600, ]))
-        value_min = min(data.iloc[i:i + 1, 601:1201].values.reshape([600, ]))
+
         transform_data = transform_sensor_data(sensor_data,i,MAKE_FIGURE=True).reshape([1200,])
         for j in range(1200):
             data.iat[i,j+1] = transform_data[j]

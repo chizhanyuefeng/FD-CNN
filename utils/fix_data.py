@@ -23,7 +23,7 @@ Y_Z_INVERSION = 7 # 将y,z轴数据对调
 X_Z_INVERSION = 8 # 将x,z轴数据对调
 
 # 修改数据所用宏
-DATA_PATH = '../data/raw_data/ADL/WAL/WAL_data.csv'
+DATA_PATH = '../data/raw_data/ADL/WAL/WALK_data.csv'
 ERROR_DATA_PATH = '../data/raw_data/ADL/WAL/error_data.csv'
 WRONG_DATA_PATH = '../data/raw_data/ADL/WAL/wrong_data.csv'
 
@@ -250,8 +250,6 @@ def main():
 
     # 合并数据
     # mergedata(ROOT_FILE_PATH,MERGE_DATA_PATH)
-
-
 
 if __name__ == '__main__':
     main()
