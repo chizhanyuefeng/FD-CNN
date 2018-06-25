@@ -1,4 +1,4 @@
-# AFD-CNN(ADL and Fall down Detecton Convolutional Neural Networks)
+# AFD-CNN(ADL and Fall Detection Convolutional Neural Networks)
 
 ## Net performance
 - accuracy = 0.978718
