@@ -57,7 +57,7 @@ class DataSet:
             self._train_x.append(all_data.iloc[i, 1:1201])
             # 创建y
             loc = class_list.index(label)
-            y = [0 for i in range(class_num)]
+            y = [0 for _ in range(class_num)]
             y[loc] = 1
             self._train_y.append(y)
 
@@ -135,17 +135,23 @@ class DataSet:
             batch_x = self.train_x[start:end]
             batch_y = self.train_y[start:end]
 
-        return np.array(batch_x),np.array(batch_y)
+        return self._normalization(np.array(batch_x)),np.array(batch_y)
 
     def get_test_data(self):
         x = self.test_x
         y = self.test_y
-        return np.array(x),np.array(y)
+        return self._normalization(np.array(x)), np.array(y)
 
     def get_train_data(self):
         x = self.train_x
         y = self.train_y
-        return np.array(x),np.array(y)
+        return self._normalization(np.array(x)), np.array(y)
+
+    def _normalization(self, data):
+
+        data = data / (256/2.0) - 1
+
+        return data
 
 def main():
     # Test Code
@@ -157,8 +163,8 @@ def main():
     # print(dataset.test_y)
     #for i in range(0,45):
     x,y=dataset.get_train_data()
-    num = np.array(x)
-    print(num.shape)
+    #num = np.array(x)
+    print(np.max(x))
     #print(dataset.epochs_completed)
 
 

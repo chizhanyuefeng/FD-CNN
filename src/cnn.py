@@ -151,7 +151,7 @@ def train_model():
         sess.run(tf.global_variables_initializer())
         train_writer = tf.summary.FileWriter("../log/", sess.graph)
 
-        for step in range(TRAIN_STEP):
+        for step in range(1, TRAIN_STEP+1):
             batch_x, batch_y = data.next_batch(BATCH_SIZE)
             if step%100==0:
                 train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
