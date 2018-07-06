@@ -170,7 +170,7 @@ def test_model():
     使用测试数据集对训练好的模型进行测试
     :return: 测试结果
     '''
-    data = dataset.DataSet('../data/dataset', CLASS_LIST)
+    data = dataset.DataSet('../data/dataset', CLASS_LIST, True)
     test_x, test_y = data.get_test_data()
 
     tf.reset_default_graph()
@@ -200,8 +200,8 @@ def test_model():
     avg_specificity = 0
 
     for i in range(CLASS_NUM):
-        sensitivity,specificity = evaluate(p_y,g_truth,i)
-        print('class:%10s,sensitivity =%05f,specificity =%05f'%(Label[CLASS_LIST[i]],sensitivity,specificity))
+        accuracy,sensitivity,specificity = evaluate(p_y,g_truth,i)
+        print('class:%10s,accuracy =%05f,sensitivity =%05f,specificity =%05f'%(Label[CLASS_LIST[i]],accuracy,sensitivity,specificity))
         avg_sensitivity += sensitivity
         avg_specificity += specificity
 
@@ -239,7 +239,10 @@ def evaluate(p,g,class_):
                 TN+=1
 
     specificity = TN/(FP+TN)
-    return sensitivity,specificity
+
+    accuracy = (TP+TN)/(FP+TN+TP+FN)
+    return accuracy,sensitivity,specificity
+    tf.losses.sigmoid_cross_entropy()
 
 
 

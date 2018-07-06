@@ -80,9 +80,9 @@ def adl_line_chart(csv_file,data_num=1):
     # 子表1绘制加速度传感器数据
     plt.subplot(2,1,1)
     plt.title('acc')
-    plt.plot(x, data.acc_x, label='x')
-    plt.plot(x, data.acc_y, label='y')
-    plt.plot(x, data.acc_z, label='z')
+    plt.plot(x, data.acc_x, label='x', color='red')
+    plt.plot(x, data.acc_y, label='y', color='green')
+    plt.plot(x, data.acc_z, label='z', color='blue')
 
     acc_max = max(data.acc_x.max(),data.acc_y.max(),data.acc_z.max())
     acc_min = min(data.acc_x.min(),data.acc_y.min(),data.acc_z.min())
@@ -99,9 +99,9 @@ def adl_line_chart(csv_file,data_num=1):
     # 子表2绘制陀螺仪传感器数据
     plt.subplot(2,1,2)
     plt.title('gyro')
-    plt.plot(x, data.gyro_x, label='x')
-    plt.plot(x, data.gyro_y, label='y')
-    plt.plot(x, data.gyro_z, label='z')
+    plt.plot(x, data.gyro_x, label='x', color='red')
+    plt.plot(x, data.gyro_y, label='y', color='green')
+    plt.plot(x, data.gyro_z, label='z', color='blue')
 
     gyro_max = max(data.gyro_x.max(),data.gyro_y.max(),data.gyro_z.max())
     gyro_min = min(data.gyro_x.min(),data.gyro_y.min(),data.gyro_z.min())
@@ -127,7 +127,7 @@ def main():
     :return:
     """
 
-    x = adl_line_chart('/home/tony/fall_research/fall_data/MobiAct_Dataset_v2.0/Annotated Data/WAL/WAL_9_1_annotated.csv',6)
+    x = adl_line_chart('/home/tony/fall_research/fall_data/MobiAct_Dataset_v2.0/Annotated Data/JOG/JOG_1_1_annotated.csv',6)
     print('pos:', x)
 
 if __name__ == '__main__':

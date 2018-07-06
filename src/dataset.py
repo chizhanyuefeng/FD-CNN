@@ -28,50 +28,66 @@ class DataSet:
     _num_examples = 0
 
     # 定义构造方法
-    def __init__(self,data_path,class_list):
-        fs = os.listdir(data_path)
-        all_data = pd.DataFrame()
+    def __init__(self,data_path,class_list,TEST_MODEL=False):
         class_num = len(class_list)
-        for f in fs:
-            file_path = os.path.join(data_path, f)
-            # 读取所有csv文件
-            if 'csv' in f:
-                data = pd.read_csv(file_path,index_col=False)
-                all_data = all_data.append(data)
 
-        np.random.shuffle(all_data.values)
+        if TEST_MODEL:
+            all_data = pd.read_csv(TEST_DATA,index_col=False)
+            for i in range(0,len(all_data.label)):
+                label = all_data.iloc[i, 0]
+                if label not in class_list:
+                    continue
+                # 提取传感器数据
+                self._test_x.append(all_data.iloc[i, 1:1201])
+                # 创建y
+                loc = class_list.index(label)
+                y = [0 for _ in range(class_num)]
+                y[loc] = 1
+                self._test_y.append(y)
+        else:
+            fs = os.listdir(data_path)
+            all_data = pd.DataFrame()
 
-        train_data = all_data[0:1000*class_num]
-        train_data.to_csv(TRAIN_DATA,index=False)
+            for f in fs:
+                file_path = os.path.join(data_path, f)
+                # 读取所有csv文件
+                if 'csv' in f:
+                    data = pd.read_csv(file_path, index_col=False)
+                    all_data = all_data.append(data)
 
-        test_data = all_data[1000*class_num:]
-        test_data.to_csv(TEST_DATA,index=False)
+            np.random.shuffle(all_data.values)
 
-        self._num_examples = class_num * 1000
+            train_data = all_data[0:1000 * class_num]
+            train_data.to_csv(TRAIN_DATA, index=False)
 
-        for i in range(0,self._num_examples):
-            label = all_data.iloc[i, 0]
-            if label not in class_list:
-                continue
-            # 提取传感器数据
-            self._train_x.append(all_data.iloc[i, 1:1201])
-            # 创建y
-            loc = class_list.index(label)
-            y = [0 for _ in range(class_num)]
-            y[loc] = 1
-            self._train_y.append(y)
+            test_data = all_data[1000 * class_num:]
+            test_data.to_csv(TEST_DATA, index=False)
 
-        for i in range(self._num_examples,len(all_data.label)):
-            label = all_data.iloc[i, 0]
-            if label not in class_list:
-                continue
-            # 提取传感器数据
-            self._test_x.append(all_data.iloc[i, 1:1201])
-            # 创建y
-            loc = class_list.index(label)
-            y = [0 for i in range(class_num)]
-            y[loc] = 1
-            self._test_y.append(y)
+            self._num_examples = class_num * 1000
+
+            for i in range(0,self._num_examples):
+                label = all_data.iloc[i, 0]
+                if label not in class_list:
+                    continue
+                # 提取传感器数据
+                self._train_x.append(all_data.iloc[i, 1:1201])
+                # 创建y
+                loc = class_list.index(label)
+                y = [0 for _ in range(class_num)]
+                y[loc] = 1
+                self._train_y.append(y)
+
+            for i in range(self._num_examples,len(all_data.label)):
+                label = all_data.iloc[i, 0]
+                if label not in class_list:
+                    continue
+                # 提取传感器数据
+                self._test_x.append(all_data.iloc[i, 1:1201])
+                # 创建y
+                loc = class_list.index(label)
+                y = [0 for i in range(class_num)]
+                y[loc] = 1
+                self._test_y.append(y)
 
     @property
     def train_x(self):
@@ -135,17 +151,17 @@ class DataSet:
             batch_x = self.train_x[start:end]
             batch_y = self.train_y[start:end]
 
-        return self._normalization(np.array(batch_x)),np.array(batch_y)
+        return np.array(batch_x),np.array(batch_y)
 
     def get_test_data(self):
         x = self.test_x
         y = self.test_y
-        return self._normalization(np.array(x)), np.array(y)
+        return np.array(x), np.array(y)
 
     def get_train_data(self):
         x = self.train_x
         y = self.train_y
-        return self._normalization(np.array(x)), np.array(y)
+        return np.array(x), np.array(y)
 
     def _normalization(self, data):
 

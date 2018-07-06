@@ -7,9 +7,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-SAVEFIG_PATH = '../data/raw_data/ADL/CHU/figure/'
-SAVEIMG_PATH = '../data/raw_data/ADL/CHU/image/'
-SOURCE_DATA_PATH = '../data/raw_data/ADL/CHU/CHU_data.csv'
+SAVEFIG_PATH = '../data/raw_data/FALL/figure/'
+SAVEIMG_PATH = '../data/raw_data/FALL/image/'
+SOURCE_DATA_PATH = '../data/raw_data/FALL/fall_data.csv'
 
 #DATASET_FALL_PATH = '../data/dataset/fall_data.csv'
 DATASET_ADL_PATH = '../data/dataset/5_upstair_data.csv'
@@ -143,7 +143,7 @@ def make_dataset():
 
 if __name__=='__main__':
 
-    #make_figure()
+    make_figure()
 
-    make_dataset()
+    #make_dataset()
     pass
