@@ -77,6 +77,7 @@ def fall_net(x):
 
     with tf.name_scope('reshape'):
         x = tf.reshape(x,[-1,20,20,3])
+        x = x / 255.0 * 2 - 1
 
     with tf.name_scope('conv1'):
         # value shape:[-1,18,18,32]

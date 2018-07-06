@@ -166,7 +166,6 @@ class DataSet:
     def _normalization(self, data):
 
         data = data / (256/2.0) - 1
-
         return data
 
 def main():
