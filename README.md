@@ -1,6 +1,7 @@
 # AFD-CNN(ADL and Fall Detection Convolutional Neural Networks)
 
 ## Net performance
+- now we optimize the network and the accuracy is 99.4%，I will be update the code
 - accuracy = 0.978718
 
 | Class        | Sensitivity    |Specificity  |
