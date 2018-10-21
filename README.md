@@ -1,19 +1,47 @@
 # AFD-CNN(ADL and Fall Detection Convolutional Neural Networks)
 
+## sensor data to img
+if the 3-axes of the human motion model are considered as the 3 channels of a RGB image, the value of the XYZ axial data can be mapped into the value of the RGB channel data in a RGB image respectively. Namely, each 3-axial data can be converted into an RGB pixel. The 400 pieces of 3-axial data cached in the sliding window can be viewed as a bitmap with size of 20 or 20 pixels.
+
+
+you can use .utils.transform.data2image func to make sensor data to img
+
+
+![image_2](md/sensor_img.png)
+
+ADLs and fall data graph
+![image_3](md/a.png)
+![image_4](md/b.png)
+![image_5](md/c.png)
+![image_5](md/d.png)
+
+sensor data to img
+![image_7](md/bit.png)
+
+
+
+## Net construct
+
+we use imgs to train our network
+
+![image_1](md/AFD_cnn.png)
+
+
+
 ## Net performance
-- now we optimize the network and the accuracy is 99.4%
+- accuracy = 0.978718
 
 | Class        | Sensitivity    |Specificity  |
 | ----- | -----:   | :----: |
-| Fall        | 100.0%      |   100.0%    |
-| Walk        | 100.0%      |   100.0%    |
-| Jog        | 100.0%      |   100.0%    |
-| Jump        | 100.0%      |   100.0%    |
-| up stair | 99.2%      |   100.0%    |
-| down stair|100.0%|99.9%|
-| stand to sit|   99.1%     |   99.6%    |
-| sit to stand | 97.3%      |   99.9%    |
-| Average        | 99.5%      |   99.9%    |
+| Fall        | 1.000000      |   0.998654    |
+| Walk        | 0.969072      |   1.000000    |
+| Jog        | 0.983051      |   0.993243    |
+| Jump        | 0.948980      |   0.998684    |
+| up stair | 0.989474      |   0.997379    |
+| down stair|0.967213|0.991848|
+| stand to sit|  0.981481      |   0.998667    |
+| sit to stand | 0.990476      |   0.997344    |
+| Average        | 0.978718      |   0.996977    |
 
 ## Requirenments
 - python3
