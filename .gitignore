@@ -19,7 +19,7 @@ _book
 *.xml
 .idea
 *.pyc
-#*.png
+*.png
 model
 log
 dataset_backup
