@@ -1,5 +1,5 @@
 # AFD-CNN(ADL and Fall Detection Convolutional Neural Networks)
-
+our paper[https://ieeexplore.ieee.org/document/8662651]
 ## Sensor data to img
 if the 3-axes of the human motion model are considered as the 3 channels of a RGB image, the value of the XYZ axial data can be mapped into the value of the RGB channel data in a RGB image respectively. Namely, each 3-axial data can be converted into an RGB pixel. The 400 pieces of 3-axial data cached in the sliding window can be viewed as a bitmap with size of 20 or 20 pixels.
 
